@@ -34,27 +34,27 @@ export const Navbar: React.FC = () => {
               leaveTo="-translate-x-full"
             >
               <Dialog.Panel className="relative flex w-full max-w-xs flex-col overflow-y-auto bg-white pb-12 shadow-xl">
-                <div className="flex px-4 pb-2 pt-28">
+                <div className="flex px-4 pb-2 pt-20 justify-end ">
                   <button
                     type="button"
                     className="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
                     onClick={() => setOpen(false)}
                   >
-                    <span className="sr-only">Close menu</span>
+                    <span className="sr-only ">Close menu</span>
                     <RxCross2 />
                   </button>
                 </div>
-                <div className="flex flex-col  space-y-6 border-t border-gray-200 px-4 py-6">
-                  <Link to={'/'} className="text-sm font-medium text-gray-900">Home</Link>
-                  <Link to={'/users'} className="text-sm font-medium text-gray-900">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-900">Venus</Link>
-                  <Link to={'/services'} className="text-sm font-medium text-gray-900">Services</Link>
-                  <Link to={'/offers'} className="text-sm font-medium text-gray-900">Offers</Link>
-                  <Link to={'/accounts'} className="text-sm font-medium text-gray-900">Accounts</Link>
-                  <Link to={'/cities'} className="text-sm font-medium text-gray-900">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-900">Countries</Link>
-                  <Link to={'/translation'} className="text-sm font-medium text-gray-900">Translation</Link>
-                  <a className="text-sm font-medium text-gray-900 cursor-pointer">Logout</a>
+                <div className="flex flex-col  border-t border-gray-200 px-4 py-0">
+                  <Link to={'/'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2" >Home</Link>
+                  <Link to={'/users'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Users</Link>
+                  <Link to={'/venus'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venus</Link>
+                  <Link to={'/services'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Services</Link>
+                  <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
+                  <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
+                  <Link to={'/cities'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Cities</Link>
+                  <Link to={'/countries'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Countries</Link>
+                  <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
+                  <a className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Logout</a>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -64,7 +64,7 @@ export const Navbar: React.FC = () => {
 
       {/* Desktop */}
       <header className="relative bg-white">
-        <nav aria-label="Top" className="bg-gray-100 px-4 sm:px-6 lg:px-8 shadow-xl">
+        <nav aria-label="Top" className="bg-gray-800 px-4 sm:px-6 lg:px-8 shadow-xl">
           <div className="">
             <div className="flex h-16 items-center">
               <button
@@ -81,22 +81,21 @@ export const Navbar: React.FC = () => {
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
                 <Link to={'/'} className='flex'>
-                  <h1 className='text-2xl font-bold text-black px-2 py-1 rounded'>Hala B Saudi</h1>
+                  <h1 className='text-2xl font-bold text-white px-2 py-1 rounded'>Hala B Saudi</h1>
                 </Link>
               </div>
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <Link to={'/'} className="text-sm font-medium text-gray-700">Home</Link>
-                  <Link to={'/users'} className="text-sm font-medium text-gray-700">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-700">Venus</Link>
-                  <Link to={'/services'} className="text-sm font-medium text-gray-700">Services</Link>
-                  <Link to={'/offers'} className="text-sm font-medium text-gray-700">Offers</Link>
-                  <Link to={'/accounts'} className="text-sm font-medium text-gray-700">Accounts</Link>
-                  <Link to={'/cities'} className="text-sm font-medium text-gray-700">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-700">Countries</Link>
-                  <Link to={'/translation'} className="text-sm font-medium text-gray-700">Translation</Link>
-                  <a className="text-sm font-medium text-gray-700 cursor-pointer">Logout</a>
+                  <Link to={'/'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Home</Link>
+                  <Link to={'/users'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Users</Link>
+                  <Link to={'/venus'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venus</Link>
+                  <Link to={'/services'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Services</Link>
+                  <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
+                  <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
+                  <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
+                  <Link to={'/countries'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Countries</Link>
+                  <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link>
                 </div>
               </div>
             </div>
