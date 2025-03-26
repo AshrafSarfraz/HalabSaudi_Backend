@@ -73,9 +73,7 @@ const Venus: React.FC = () => {
           </table>
         </div>
 
-        <AddVenusModal open={openModal} onClose={() => setOpenModal(false)} venusName={venusName} logo={logo} status={status} 
-          onVenusNameChange={(e) => setVenusName(e.target.value)} onLogoChange={(e) => setLogo(e.target.files ? e.target.files[0] : null)} 
-          onStatusChange={(e) => setStatus(e.target.value as "Active" | "Inactive")} onSubmit={handleSubmit} isEditMode={editMode} />
+        <AddVenusModal isOpen={openModal} onClose={() => setOpenModal(false)} />
       </div>
     </Layout>
   );

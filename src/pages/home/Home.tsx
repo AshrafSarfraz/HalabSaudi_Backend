@@ -15,6 +15,8 @@ const data = [
 
 
 const Home = () => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  console.log(currentUser)
     return (
       <Layout>
          <div className="container mt-6   mx-auto p-4">
