@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/ReactToastify.css'
 import Home from "./pages/home/Home";
-import Account from "./pages/accounts/Account";
 import Countries from "./pages/country/Countries";
 import Services from "./pages/services/Services";
 import Translation from "./pages/translation/Translation";
@@ -9,6 +10,8 @@ import { User } from "./pages/user/User";
 import Venus from "./pages/venus/venus";
 import CityManagementScreen from "./pages/cities/Cities";
 import AccountManagementScreen from "./pages/accounts/Account";
+import Login from "./pages/Authentication/login/Login";
+import NoPage from "./pages/NoPage";
 
 
 
@@ -18,7 +21,8 @@ function App() {
      <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/users" element={<User/>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/users" element={<ProtectedRoutes><User/></ProtectedRoutes>} />
           <Route path="/venus" element={<Venus />} />
           <Route path="/services" element={<Services />} />
           <Route path="/offers" element={<Offers />} />
@@ -26,9 +30,20 @@ function App() {
           <Route path="/cities" element={<CityManagementScreen />} />
           <Route path="/countries" element={<Countries />} />
           <Route path="/translation" element={<Translation />} />
+          <Route path="/*" element={<NoPage />} />
         </Routes>
+        <ToastContainer />
       </Router>
   );
 }
 
 export default App;
+
+export const ProtectedRoutes = ({ children }) => {
+  if (localStorage.getItem('currentUser')) {
+    return children
+  }
+  else {
+    return <Navigate to='/login' />
+  }
+}

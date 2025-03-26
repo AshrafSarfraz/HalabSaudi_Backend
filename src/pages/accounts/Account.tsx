@@ -130,9 +130,7 @@ const AccountManagementScreen: React.FC = () => {
         {/* AccountModal Component */}
         <AccountModal
           isOpen={isModalOpen}
-          currentAccount={currentAccount}
           onClose={closeModal}
-          onSave={handleAddOrUpdateAccount}
         />
       </div>
     </Layout>
