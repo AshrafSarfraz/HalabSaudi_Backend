@@ -52,8 +52,7 @@ export const Navbar: React.FC = () => {
                   <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Countries</Link>
-                  <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
+                   <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
                   <a className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Logout</a>
                 </div>
               </Dialog.Panel>
@@ -94,7 +93,6 @@ export const Navbar: React.FC = () => {
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Countries</Link>
                   <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link>
                 </div>
               </div>
