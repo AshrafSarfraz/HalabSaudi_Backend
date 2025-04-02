@@ -7,13 +7,24 @@ import ServicesModal from "../../component/modal/ServiceModal";
 interface VenusEntry {
   id: string;
   nameEng: string;
-  img:string;
-  discount:string;
-  selectedCity:string;
-  isBestSeller:string;
-  pin:string;
-  startAt:string;
-  endAt:string
+  nameArabic: string;
+  descriptionEng: string;
+  descriptionArabic: string;
+  longitude: string;
+  latitude: string;
+  discount: string;
+  startAt: string;
+  endAt: string;
+  pin: string;
+  isBestSeller: string;
+  isVenue: string;
+  selectedVenue: any | null;
+  selectedCategory: string;
+  selectedCity: any | null;
+  selectedCountry: any | null;
+  status: string;
+  img: string;
+  imageUrl: string; // added image URL for the uploaded image
 }
 
 const Services: React.FC = () => {

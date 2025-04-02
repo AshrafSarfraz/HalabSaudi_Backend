@@ -2,29 +2,22 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { fireDB } from "../../firebase/FirebaseConfig";
 
-// Define Type for Country
-interface Country {
-  id: string;
-  countryName: string;
-}
+
 
 // Define Props Type
 interface CountriesDropdownProps {
-  selectedCountry: Country | null;
-  onCountryChange: (country: Country | null) => void;
+  selectedCountry: string ;  // Now it's just the countryName as a string
+  onCountryChange: (countryName: string ) => void;  // On change, we send only the countryName
 }
 
 const CountriesDropdown: React.FC<CountriesDropdownProps> = ({ selectedCountry, onCountryChange }) => {
-  const [countries, setCountries] = useState<Country[]>([]);
+  const [countries, setCountries] = useState<string[]>([]);  // We now only store country names as strings
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const snapshot = await getDocs(collection(fireDB, "Cities")); // Fixed collection name
-        const countryList = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Country[]; // Type assertion
+        const snapshot = await getDocs(collection(fireDB, "Cities")); // Use the correct collection name
+        const countryList = snapshot.docs.map((doc) => doc.data().countryName) as string[]; // Only store country names
         setCountries(countryList);
       } catch (error) {
         console.error("Error fetching countries:", error);
@@ -36,17 +29,14 @@ const CountriesDropdown: React.FC<CountriesDropdownProps> = ({ selectedCountry, 
 
   return (
     <select
-      value={selectedCountry?.id || ""}
-      onChange={(e) => {
-        const selected = countries.find((country) => country.id === e.target.value) || null;
-        onCountryChange(selected); // Send full object
-      }}
+      value={selectedCountry }
+      onChange={(e) => onCountryChange(e.target.value )} // Pass only the countryName
       className="border p-3 w-full rounded-lg"
     >
       <option value="">Select Country</option>
       {countries.map((country) => (
-        <option key={country.id} value={country.id}>
-          {country.countryName}
+        <option key={country} value={country}>
+          {country}
         </option>
       ))}
     </select>

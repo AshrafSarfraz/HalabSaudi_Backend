@@ -26,10 +26,10 @@ interface ServicesModalProps {
     pin: string;
     isBestSeller: string;
     isVenue: string;
-    selectedVenue: any;
+    selectedVenue: string;
     selectedCategory: string;
-    selectedCity: any;
-    selectedCountry: any;
+    selectedCity: string;
+    selectedCountry: string;
     status: string;
     img: string;
   } | null;
@@ -48,10 +48,10 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [pin, setPin] = useState("");
   const [isBestSeller, setIsBestSeller] = useState("");
   const [isVenue, setIsVenue] = useState("");
-  const [selectedVenue, setSelectedVenue] = useState<any>(null);
+  const [selectedVenue, setSelectedVenue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCity, setSelectedCity] = useState<any>(null);
-  const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [selectedCity, setSelectedCity] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState(" ");
   const [status, setStatus] = useState("");
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,10 +72,10 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setPin("");
     setIsBestSeller("");
     setIsVenue("");
-    setSelectedVenue(null);
+    setSelectedVenue("");
     setSelectedCategory("");
-    setSelectedCity(null);
-    setSelectedCountry(null);
+    setSelectedCity("");
+    setSelectedCountry("");
     setStatus("");
     setImageUrl("");
   };
@@ -93,12 +93,12 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setStartAt(editData.startAt || "");
       setEndAt(editData.endAt || "");
       setPin(editData.pin || "");
-      setIsBestSeller(editData.isBestSeller || "No");
-      setIsVenue(editData.isVenue || "No");
-      setSelectedVenue(editData.selectedVenue || null);
+      setIsBestSeller(editData.isBestSeller || "");
+      setIsVenue(editData.isVenue || "");
+      setSelectedVenue(editData.selectedVenue || "");
       setSelectedCategory(editData.selectedCategory || "");
-      setSelectedCity(editData.selectedCity || null);
-      setSelectedCountry(editData.selectedCountry || null);
+      setSelectedCity(editData.selectedCity || "");
+      setSelectedCountry(editData.selectedCountry || "");
       setStatus(editData.status || "");
       setImageUrl(editData.img || "");
     } else {
@@ -142,8 +142,9 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         pin,
         isBestSeller,
         isVenue,
-        selectedCity: selectedCity?.cityName || "",
-        selectedCountry: selectedCountry?.countryName || "",
+        selectedCity,
+        selectedCountry,
+        selectedVenue,
         status,
         img: url,
         time: Timestamp.now(),
