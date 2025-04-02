@@ -47,7 +47,7 @@ export const Navbar: React.FC = () => {
                 <div className="flex flex-col  border-t border-gray-200 px-4 py-0">
                   <Link to={'/'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2" >Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venus</Link>
+                  <Link to={'/venues'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venues</Link>
                   <Link to={'/services'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Services</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
@@ -88,7 +88,7 @@ export const Navbar: React.FC = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <Link to={'/'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venus</Link>
+                  <Link to={'/venues'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venues</Link>
                   <Link to={'/services'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Services</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>

@@ -22,7 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/users" element={<ProtectedRoutes><User/></ProtectedRoutes>} />
-          <Route path="/venus" element={<Venus />} />
+          <Route path="/venues" element={<Venus />} />
           <Route path="/services" element={<Services />} />
           <Route path="/offers" element={<Offers />} />
           <Route path="/accounts" element={<AccountManagementScreen />} />
