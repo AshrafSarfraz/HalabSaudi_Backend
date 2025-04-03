@@ -159,7 +159,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         await addDoc(collection(fireDB, "Brands"), venueData);
         toast.success("Brand added successfully!");
       }
-
+      resetForm();
       onClose();
     } catch (error) {
       console.error(error);

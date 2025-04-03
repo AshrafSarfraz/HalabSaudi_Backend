@@ -157,8 +157,8 @@ const Services: React.FC = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="text-center py-5 text-gray-500">
-                      No venues found.
+                    <td colSpan={12} className="text-center py-5 text-gray-500">
+                      No Data found.
                     </td>
                   </tr>
                 )}

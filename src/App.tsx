@@ -19,15 +19,15 @@ function App() {
 
      <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ProtectedRoutes><Home/></ProtectedRoutes>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/users" element={<ProtectedRoutes><User/></ProtectedRoutes>} />
-          <Route path="/venues" element={<Venus />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/offers" element={<Offers />} />
-          <Route path="/accounts" element={<AccountManagementScreen />} />
-          <Route path="/cities" element={<CityManagementScreen />} />
-          <Route path="/translation" element={<Translation />} />
+          <Route path="/venues" element={<ProtectedRoutes><Venus/></ProtectedRoutes>} />
+          <Route path="/services" element={<ProtectedRoutes><Services/></ProtectedRoutes>} />
+          <Route path="/offers" element={<ProtectedRoutes><Offers/></ProtectedRoutes>} />
+          <Route path="/accounts" element={<ProtectedRoutes><AccountManagementScreen/></ProtectedRoutes>} />
+          <Route path="/cities" element={<ProtectedRoutes><CityManagementScreen/></ProtectedRoutes>} />
+          <Route path="/translation" element={<ProtectedRoutes><Translation/></ProtectedRoutes>} />
           <Route path="/*" element={<NoPage />} />
         </Routes>
         <ToastContainer />
