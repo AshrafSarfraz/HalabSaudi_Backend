@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Layout from '../../component/layout/Layout';
 
 const data = [
@@ -15,7 +15,9 @@ const data = [
 
 
 const Home = () => {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const storedUser = localStorage.getItem("currentUser");
+  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  
   console.log(currentUser)
     return (
       <Layout>

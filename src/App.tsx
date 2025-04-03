@@ -1,3 +1,4 @@
+import React, { ReactNode } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/ReactToastify.css'
@@ -12,7 +13,9 @@ import AccountManagementScreen from "./pages/accounts/Account";
 import Login from "./pages/Authentication/login/Login";
 import NoPage from "./pages/NoPage";
 
-
+interface ProtectedRoutesProps {
+  children: ReactNode;
+}
 
 function App() {
   return (
@@ -37,11 +40,10 @@ function App() {
 
 export default App;
 
-export const ProtectedRoutes = ({ children }) => {
-  if (localStorage.getItem('currentUser')) {
-    return children
+export const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({ children }) => {
+  if (localStorage.getItem("currentUser")) {
+    return <>{children}</>;
+  } else {
+    return <Navigate to="/login" />;
   }
-  else {
-    return <Navigate to='/login' />
-  }
-}
+};
