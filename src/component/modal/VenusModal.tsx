@@ -1,55 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { fireDB, storage } from "../../firebase/FirebaseConfig"; // Import storage
-import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { fireDB, storage } from "../../firebase/FirebaseConfig";
+import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Loader from "../loader/Loader";
 
 interface VenusModalProps {
   isOpen: boolean;
   onClose: () => void;
+  editData?: {
+    id: string;
+    venueName: string;
+    status: string;
+    img: string;
+  } | null;
 }
 
-const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose }) => {
+const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData }) => {
   const [venueName, setVenueName] = useState("");
   const [status, setStatus] = useState("Active");
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
-  // Image change handler
+  useEffect(() => {
+    if (editData) {
+      setVenueName(editData.venueName);
+      setStatus(editData.status);
+      setImageUrl(editData.img);
+    } else {
+      setVenueName("");
+      setStatus("Active");
+      setImageUrl("");
+    }
+  }, [editData]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageUpload(e.target.files[0]);
+      setImageUrl(URL.createObjectURL(e.target.files[0])); // Show new preview
     }
   };
 
-  // Function to save venue
   const saveVenue = async () => {
-    if (!venueName || !imageUpload || !status) {
+    if (!venueName || !status || (!imageUpload && !editData)) {
       return toast.error("All fields are required");
     }
 
     setLoading(true);
+
     try {
-      // Upload image to Firebase Storage
-      const imageRef = ref(storage, `Venue/images/${imageUpload.name}`);
-      const snapshot = await uploadBytes(imageRef, imageUpload);
-      const url = await getDownloadURL(snapshot.ref);
+      let url = imageUrl;
 
-      // Save venue data with image URL
-      const venue = {
-        venueName,
-        status,
-        img: url, // Image URL stored in Firestore
-        time: Timestamp.now(),
-      };
+      if (imageUpload) {
+        const imageRef = ref(storage, `Venue/images/${imageUpload.name}`);
+        const snapshot = await uploadBytes(imageRef, imageUpload);
+        url = await getDownloadURL(snapshot.ref);
+      }
 
-      await addDoc(collection(fireDB, "Venues"), venue);
+      if (editData) {
+        await updateDoc(doc(fireDB, "Venues", editData.id), { venueName, status, img: url });
+        toast.success("Venue updated successfully!");
+      } else {
+        await addDoc(collection(fireDB, "Venues"), {
+          venueName,
+          status,
+          img: url,
+          time: Timestamp.now(),
+        });
+        toast.success("Venue added successfully!");
+      }
 
-      toast.success("Successfully added!");
-      setVenueName("");
-      setImageUpload(null);
-      setStatus("Active");
       onClose();
     } catch (error) {
       console.error(error);
@@ -61,24 +82,31 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose }) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="fixed  inset-0 bg-black bg-opacity-50 flex justify-center items-center">
         {loading && <Loader />}
         <div className="bg-white p-6 rounded-lg w-[400px]">
-          <h2 className="text-2xl font-semibold mb-5 text-gray-800">Add Venue</h2>
+          <h2 className="text-2xl font-semibold mb-5 text-gray-800">
+            {editData ? "Edit Venue" : "Add Venue"}
+          </h2>
+
           <input
             type="text"
             value={venueName}
             onChange={(e) => setVenueName(e.target.value)}
             className="border p-3 w-full rounded-lg mb-3"
-            placeholder="Name"
+            placeholder="Venue Name"
           />
+
+          {imageUrl && (
+            <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mb-3 rounded" />
+          )}
+
           <input
             type="file"
             onChange={handleImageChange}
             className="border p-3 w-full rounded-lg mb-3"
           />
 
-          {/* Status Dropdown */}
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -89,18 +117,11 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose }) => {
           </select>
 
           <div className="flex justify-end space-x-4">
-            <button
-              onClick={onClose}
-              className="px-5 py-2 bg-gray-300 rounded-lg"
-            >
+            <button onClick={onClose} className="px-5 py-2 bg-gray-300 rounded-lg">
               Cancel
             </button>
-            <button
-              onClick={saveVenue}
-              className="px-5 py-2 bg-blue-600 text-white rounded-lg"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Venue"}
+            <button onClick={saveVenue} className="px-5 py-2 bg-blue-600 text-white rounded-lg" disabled={loading}>
+              {loading ? "Saving..." : editData ? "Update Venue" : "Save Venue"}
             </button>
           </div>
         </div>

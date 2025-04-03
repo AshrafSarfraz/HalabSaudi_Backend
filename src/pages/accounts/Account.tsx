@@ -1,140 +1,130 @@
-import React, { useState } from "react"; // Updated to AccountModal
-import Layout from "../../component/layout/Layout";
+import React, { useState, useEffect } from "react";
+import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
+import { fireDB } from "../../firebase/FirebaseConfig";
+import { toast } from "react-toastify";
 import AccountModal from "../../component/modal/AccountModal";
+import Layout from "../../component/layout/Layout";
 
-interface Account {
+interface AccountEntry {
   id: string;
+  name: string;
   email: string;
-  password: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+  password:string;
 }
 
-const AccountManagementScreen: React.FC = () => {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+const Accounts: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentAccount, setCurrentAccount] = useState<Account | null>(null);
+  const [accountsList, setAccountsList] = useState<AccountEntry[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [editData, setEditData] = useState<AccountEntry | null>(null);
 
-  const openModal = () => {
+  const openModal = (account?: AccountEntry) => {
+    setEditData(account || null);
     setIsModalOpen(true);
-    setCurrentAccount(null); // Reset current account for adding new account
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setCurrentAccount(null);
+    setEditData(null);
   };
 
-  const handleAddOrUpdateAccount = (account: Account) => {
-    if (currentAccount) {
-      // Update account
-      setAccounts(
-        accounts.map((acc) =>
-          acc.id === currentAccount.id
-            ? { ...acc, ...account, updatedAt: new Date().toISOString() }
-            : acc
-        )
-      );
-    } else {
-      // Add new account
-      setAccounts([
-        ...accounts,
-        {
-          ...account,
-          id: Date.now().toString(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ]);
+  // Fetch Data
+  useEffect(() => {
+    setLoading(true);
+    const q = query(collection(fireDB, "Admins"), orderBy("time"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const accountsArray: AccountEntry[] = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as AccountEntry[];
+      setAccountsList(accountsArray);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Delete Data
+  const handleDeleteAccount = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this account?")) return;
+    try {
+      await deleteDoc(doc(fireDB, "Admins", id));
+      toast.success("Account deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      toast.error("Failed to delete account");
     }
-  };
-
-  const handleEditAccount = (account: Account) => {
-    setCurrentAccount(account);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteAccount = (id: string) => {
-    setAccounts(accounts.filter((account) => account.id !== id));
-  };
-
-  const formatDateTime = (dateTime: string) => {
-    const date = new Date(dateTime);
-    const formattedDate = date.toLocaleDateString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return `${formattedDate}  ${formattedTime}`; // Small gap between date and time
   };
 
   return (
     <Layout>
-      <div className="p-6">
-        <h1 className="text-3xl font-semibold mb-6">Account Management</h1>
-        {/* Add Account Button */}
-        <button
-          onClick={openModal}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-5 "
-        >
-          Add New Account
-        </button>
+      <div className="container mx-auto py-6 px-4">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Account Management</h1>
 
-        {/* Accounts Table */}
-        <table className="table-auto w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Role</th>
-              <th className="px-4 py-2 border">Created At</th>
-              <th className="px-4 py-2 border">Updated At</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((account) => (
-              <tr key={account.id}>
-                <td className="px-4 py-2 border">{account.email}</td>
-                <td className="px-4 py-2 border">{account.role}</td>
-                <td className="px-4 py-2 border">
-                  {formatDateTime(account.createdAt)}
-                </td>
-                <td className="px-4 py-2 border">
-                  {formatDateTime(account.updatedAt)}
-                </td>
-                <td className="px-4 py-2 border">
-                  <button
-                    onClick={() => handleEditAccount(account)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteAccount(account.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="flex flex-col md:flex-row md:justify-between items-center mb-6 gap-3">
+          <button
+            onClick={() => openModal()}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition duration-200 shadow-md"
+          >
+            + Add Account
+          </button>
+        </div>
 
-        {/* AccountModal Component */}
-        <AccountModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-        />
+        {loading ? (
+          <div className="flex justify-center items-center py-10">
+            <span className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></span>
+          </div>
+        ) : (
+          <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
+                  <th className="border p-3 text-center">Name</th>
+                  <th className="border p-3 text-center">Email</th>
+                  <th className="border p-3 text-center">Role</th>
+                  <th className="border p-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accountsList.length > 0 ? (
+                  accountsList.map((account) => (
+                    <tr key={account.id} className="hover:bg-gray-100 transition">
+                      <td className="border p-3 text-center text-gray-800">{account.name}</td>
+                      <td className="border p-3 text-center text-gray-800">{account.email}</td>
+                      <td className="border p-3 text-center text-gray-800">{account.role}</td>
+                      <td className="border p-3 text-center space-x-2">
+                        <button
+                          onClick={() => openModal(account)}
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAccount(account.id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="text-center py-5 text-gray-500">
+                      No accounts found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
+      <AccountModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
     </Layout>
   );
 };
 
-export default AccountManagementScreen;
+export default Accounts;

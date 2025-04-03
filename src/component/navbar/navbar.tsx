@@ -1,10 +1,18 @@
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RxCross2 } from 'react-icons/rx';
 
 export const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+  
+    const handleLogout = () => {
+      // Remove user data from localStorage
+      localStorage.removeItem("currentUser");
+      // Redirect to the login page
+      navigate("/login");
+    };
 
   return (
     <div className="bg-white sticky top-0 z-50">
@@ -47,15 +55,19 @@ export const Navbar: React.FC = () => {
                 <div className="flex flex-col  border-t border-gray-200 px-4 py-0">
                   <Link to={'/'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2" >Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venus</Link>
+                  <Link to={'/venues'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venues</Link>
                   <Link to={'/services'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Services</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Countries</Link>
-                  <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
-                  <a className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Logout</a>
-                </div>
+                   <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
+                   <button 
+  onClick={handleLogout}  
+  className="text-sm font-medium text-gray-900 bg-gray-200 py-2 px-4 hover:bg-gray-700 hover:text-white rounded mt-2 lg:hidden"
+>
+  Logout
+</button>
+                   </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -89,13 +101,15 @@ export const Navbar: React.FC = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <Link to={'/'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Users</Link>
-                  <Link to={'/venus'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venus</Link>
+                  <Link to={'/venues'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venues</Link>
                   <Link to={'/services'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Services</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
-                  <Link to={'/countries'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Countries</Link>
                   <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link>
+                  <button onClick={handleLogout}   className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline" >
+                    Logout
+                   </button> 
                 </div>
               </div>
             </div>
