@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CountryModal from "../../component/modal/CountryModal";
+
 import Layout from "../../component/layout/Layout";
 
 interface Country {
@@ -104,12 +104,7 @@ const Countries: React.FC = () => {
         </table>
 
         {/* CountryModal Component */}
-        <CountryModal
-          isOpen={isModalOpen}
-          currentCountry={currentCountry}
-          onClose={closeModal}
-          onSave={handleAddOrUpdateCountry}
-        />
+      
       </div>
     </Layout>
   );
