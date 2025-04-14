@@ -18,6 +18,7 @@ interface ServicesModalProps {
     nameArabic: string;
     descriptionEng: string;
     descriptionArabic: string;
+    PhoneNumber:string;
     longitude: string;
     latitude: string;
     discount: string;
@@ -40,6 +41,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [nameArabic, setNameArabic] = useState("");
   const [descriptionEng, setDescriptionEng] = useState("");
   const [descriptionArabic, setDescriptionArabic] = useState("");
+  const [PhoneNumber, setPhoneNumber] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
@@ -64,6 +66,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setNameArabic("");
     setDescriptionEng("");
     setDescriptionArabic("");
+    setPhoneNumber("");
     setLongitude("");
     setLatitude("");
     setDiscount("");
@@ -87,6 +90,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setNameArabic(editData.nameArabic || "");
       setDescriptionEng(editData.descriptionEng || "");
       setDescriptionArabic(editData.descriptionArabic || "");
+      setPhoneNumber(editData.PhoneNumber || "");
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setDiscount(editData.discount || "");
@@ -133,6 +137,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
         nameArabic,
         descriptionEng,
         descriptionArabic,
+        PhoneNumber,
         longitude,
         latitude,
         discount,
@@ -184,35 +189,30 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
-            <input type="text" value={nameEng} onChange={(e) => setNameEng(e.target.value)} className="border p-3 rounded-lg" placeholder="Name in English" />
-            <input type="text" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} className="border p-3 rounded-lg" placeholder="Name in Arabic" />
+            <input type="text" value={nameEng} onChange={(e) => setNameEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Name in English" />
+            <input type="text" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Name in Arabic" />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-3">
-            <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28" placeholder="Description In English"></textarea>
-            <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28" placeholder="Description In Arabic"></textarea>
+            <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In English"></textarea>
+            <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In Arabic"></textarea>
           </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-3">
-         <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2">Start Date:</label>
-         <input  type="date" value={startAt}  onChange={(e) => setStartAt(e.target.value)}  className="border p-2 rounded-lg w-full" />
-        </div>
-         <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2">End Date:</label>
-       <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full"  />
-        </div>
-       </div>
+     
 
           <div className="grid grid-cols-3 gap-4 mt-3">
-            <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg" placeholder="Longitude" />
-            <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg" placeholder="Latitude" />
-            <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg" placeholder="Discount" />
+            <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Longitude" />
+            <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
+            <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Discount" />
           </div>
 
- 
-  
+          <div className="grid grid-cols-3 gap-4 mt-3">
+          <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" /> 
+                  <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
+                  <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
 
+          </div>
+      
           <div className="grid grid-cols-3 gap-4 mt-3">
           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
@@ -220,33 +220,40 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
           </div>
           <div className="grid grid-cols-3 gap-4 mt-3">
 
-          <select value={isBestSeller}   onChange={(e) =>setIsBestSeller(e.target.value)}   className="border p-3 pr-8 w-full rounded-lg" >
-                 <option value="">Is Best Seller</option>
+          <select value={isBestSeller}   onChange={(e) =>setIsBestSeller(e.target.value)}   className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+                 <option  value="">Is Best Seller</option>
                  <option value="Yes">Yes</option>
                  <option value="No">No</option>
           </select>
-          <select value={isVenue} onChange={(e) => setIsVenue(e.target.value)} className="border p-3 pr-8 w-full rounded-lg" >
+          <select value={isVenue} onChange={(e) => setIsVenue(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
                  <option value="">Is Venue</option>
                  <option value="Yes">Yes</option>
                  <option value="No">No</option>
           </select>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-3 pr-8 w-full rounded-lg" >
-                 <option value="">Status</option>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+                 <option value="">Is Status Active</option>
                  <option value="Yes">Yes</option>
                  <option value="No">No</option>
           </select>
-          <div className="flex items-center space-x-2">
-                  <input type="text"  value={pin} readOnly className="border p-2 rounded-lg w-[80%] text-center" />
-                  <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
-          </div>
+     
           </div>
          <div className="mt-3 ">
                   {isVenue === "Yes" && ( <VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /> )}
          </div>
  
+         <div className="grid grid-cols-2 gap-4 mt-3">
+         <div>
+         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Starting Date:</label>
+         <input  type="date" value={startAt}  onChange={(e) => setStartAt(e.target.value)}  className="border p-2 rounded-lg w-full  text-[13px]" />
+        </div>
+         <div>
+         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Ending Date:</label>
+       <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full text-[13px] "  />
+        </div>
+       </div>
 
           {imageUrl && <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-3 rounded-lg" />}
-          <input type="file" onChange={handleImageChange} className="border p-3 w-full rounded-lg mt-3" />
+          <input type="file" onChange={handleImageChange} className="border p-3 w-full rounded-lg mt-3 text-[13px] " />
           <div className="flex justify-end space-x-4 mt-5">
             <button onClick={()=>{resetForm(); onClose();}} className="px-5 py-2 bg-gray-300 rounded-lg">
               Cancel

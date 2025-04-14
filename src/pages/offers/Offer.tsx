@@ -11,6 +11,7 @@ interface VenusEntry {
   nameArabic: string;
   descriptionEng: string;
   descriptionArabic: string;
+  PhoneNumber:string;
   longitude: string;
   latitude: string;
   discount: string;
@@ -65,7 +66,7 @@ const FlatOffer: React.FC = () => {
   const handleDeleteVenus = async (id: string) => {
     if (!confirm("Are you sure you want to delete this Offer?")) return;
     try {
-      await deleteDoc(doc(fireDB, "Brands", id));
+      await deleteDoc(doc(fireDB, "FlatOffers", id));
       alert("Deleted successfully");
     } catch (error) {
       console.error("Error deleting document:", error);

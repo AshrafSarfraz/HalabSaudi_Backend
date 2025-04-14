@@ -31,7 +31,7 @@ const CountriesDropdown: React.FC<CountriesDropdownProps> = ({ selectedCountry, 
     <select
       value={selectedCountry }
       onChange={(e) => onCountryChange(e.target.value )} // Pass only the countryName
-      className="border p-3 w-full rounded-lg"
+      className="border p-3 w-full rounded-lg  text-[13px] "
     >
       <option value="">Select Country</option>
       {countries.map((country) => (

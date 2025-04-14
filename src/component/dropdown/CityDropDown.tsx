@@ -29,7 +29,7 @@ const CitiesDropdown: React.FC<CitiesDropdownProps> = ({ selectedCity, onCityCha
     <select
       value={selectedCity}
       onChange={(e) => onCityChange(e.target.value)} // Pass just cityName
-      className="border p-3 w-full rounded-lg"
+      className="border p-3 w-full rounded-lg text-[13px] "
     >
       <option value="">Select City</option>
       {cities.map((city) => (

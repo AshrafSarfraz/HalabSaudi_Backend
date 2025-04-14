@@ -20,7 +20,7 @@ const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({ selectedCategor
     <select
       value={selectedCategory}
       onChange={(e) => onCategoryChange(e.target.value)}
-      className="border p-3 w-full rounded-lg"
+      className="border p-3 w-full rounded-lg text-[13px] "
     >
       <option value="">Select Category</option>
       {categories.map((category) => (
