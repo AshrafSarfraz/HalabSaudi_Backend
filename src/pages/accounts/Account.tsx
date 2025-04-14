@@ -46,11 +46,21 @@ const Accounts: React.FC = () => {
   }, []);
 
   // Delete Data
-  const handleDeleteAccount = async (id: string) => {
+  const handleDeleteAccount = async (id: string, email: string) => {
+    // Prevent deletion if the email matches the specified one
+    if (email === "ashraf@westwalk.qa") {
+      toast.error("This account cannot be deleted.");
+      return;
+    }
+
     if (!confirm("Are you sure you want to delete this account?")) return;
+
     try {
       await deleteDoc(doc(fireDB, "Admins", id));
       toast.success("Account deleted successfully!");
+
+      // Remove the deleted account from the state
+      setAccountsList((prev) => prev.filter((account) => account.id !== id));
     } catch (error) {
       console.error("Error deleting document:", error);
       toast.error("Failed to delete account");
@@ -94,18 +104,24 @@ const Accounts: React.FC = () => {
                       <td className="border p-3 text-center text-gray-800">{account.email}</td>
                       <td className="border p-3 text-center text-gray-800">{account.role}</td>
                       <td className="border p-3 text-center space-x-2">
-                        <button
-                          onClick={() => openModal(account)}
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteAccount(account.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-200"
-                        >
-                          Delete
-                        </button>
+                        {  account.email==='ashraf@westwalk.qa' ? "" :
+                          <div>
+                          <button
+                            onClick={() => openModal(account)}
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white mx-3  px-3 py-1 rounded transition duration-200"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() =>  handleDeleteAccount(account.id, account.email)}
+                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-200"
+                          >
+                            Delete
+                          </button>
+                          </div>
+                 
+                        }
+                      
                       </td>
                     </tr>
                   ))

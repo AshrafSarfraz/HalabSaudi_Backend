@@ -12,7 +12,7 @@ export const User: React.FC = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const usersPerPage = 15;
 
   useEffect(() => {
@@ -82,9 +82,9 @@ export const User: React.FC = () => {
 
         {/* Loader */}
         {loading ? (
-          <div className="flex justify-center items-center h-48">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
-          </div>
+         <div className="flex justify-center items-center py-10">
+         <span className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></span>
+       </div>
         ) : (
           <>
             {/* Users Table */}
