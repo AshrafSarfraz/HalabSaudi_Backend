@@ -10,6 +10,7 @@ interface VenusEntry {
   nameArabic: string;
   descriptionEng: string;
   descriptionArabic: string;
+  PhoneNumber:string;
   longitude: string;
   latitude: string;
   discount: string;
