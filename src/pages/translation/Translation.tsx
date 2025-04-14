@@ -5,7 +5,7 @@ const Translation = () => {
     return (
         <Layout>
        <div>
-            Translation
+            Translation oka
         </div>
         </Layout>
     );
