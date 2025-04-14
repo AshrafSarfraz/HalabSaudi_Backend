@@ -20,7 +20,7 @@ interface ProtectedRoutesProps {
 function App() {
   return (
 
-     <Router>
+     <Router> 
         <Routes>
           <Route path="/" element={<ProtectedRoutes><Home/></ProtectedRoutes>}/>
           <Route path="/login" element={<Login />} />
