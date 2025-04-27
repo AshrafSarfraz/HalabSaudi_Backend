@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import Layout from '../../component/layout/Layout';
 
-const Home = () => {
+const Home2 = () => {
   const [counts, setCounts] = useState({
     services: 0,
     users: 0,
@@ -73,4 +73,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home2;
