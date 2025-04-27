@@ -16,16 +16,21 @@ const CountriesDropdown: React.FC<CountriesDropdownProps> = ({ selectedCountry, 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const snapshot = await getDocs(collection(fireDB, "Cities")); // Use the correct collection name
-        const countryList = snapshot.docs.map((doc) => doc.data().countryName) as string[]; // Only store country names
-        setCountries(countryList);
+        const snapshot = await getDocs(collection(fireDB, "Cities"));
+        const countryList = snapshot.docs.map((doc) => doc.data().countryName) as string[];
+  
+        // Remove duplicate country names
+        const uniqueCountries = Array.from(new Set(countryList));
+  
+        setCountries(uniqueCountries);
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
     };
-
+  
     fetchCountries();
   }, []);
+  
 
   return (
     <select
