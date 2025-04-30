@@ -26,6 +26,7 @@ interface VenusEntry {
   selectedCountry: any | null;
   status: string;
   img: string;
+  pdfUrl:string;
   imageUrl: string; // added image URL for the uploaded image
 }
 

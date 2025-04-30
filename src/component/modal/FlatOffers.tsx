@@ -33,6 +33,7 @@ interface ServicesModalProps {
     selectedCountry: string;
     status: string;
     img: string;
+    pdfUrl: string; // Add PDF URL
   } | null;
 }
 
@@ -58,6 +59,9 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+    const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfUrl, setPdfUrl] = useState(editData?.pdfUrl || ""); // Set existing PDF URL if editing
+  
 
 
 
@@ -81,6 +85,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setSelectedCountry("");
     setStatus("");
     setImageUrl("");
+    setPdfUrl("");
   };
 
   // Populate form fields if editing
@@ -105,6 +110,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setSelectedCountry(editData.selectedCountry || "");
       setStatus(editData.status || "");
       setImageUrl(editData.img || "");
+      setPdfUrl(editData.pdfUrl || "")
     } else {
       resetForm()
     }
@@ -116,7 +122,11 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setImageUrl(URL.createObjectURL(e.target.files[0])); // Preview Image
     }
   };
-
+const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPdfFile(e.target.files[0]);
+    }
+  };
   const saveVenue = async () => {
     if (!nameEng || !descriptionEng || !longitude || !latitude || !selectedCategory || !selectedCity ||  (!imageUpload && !editData)) {
       return toast.error("All fields are required!");
@@ -252,9 +262,30 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
         </div>
        </div>
 
-          {imageUrl && <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-3 rounded-lg" />}
-          <input type="file" onChange={handleImageChange} className="border p-3 w-full rounded-lg mt-3 text-[13px] " />
-          <div className="flex justify-end space-x-4 mt-5">
+       <div className="mt-5">
+  {/* Custom Label for PDF Input */}
+  {(pdfFile || pdfUrl) && (
+  <div className="mb-3 bg-gray-100 rounded-lg w-[100%] p-3">
+ <span>
+  {pdfFile 
+    ? pdfFile.name 
+    : decodeURIComponent(pdfUrl.split('/').pop()?.split('?')[0]).split('/').pop()}
+</span>
+  </div>
+)}
+  <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg">
+    Choose Menu
+  </label> 
+  <input type="file" id="pdf-upload"  onChange={handlePdfChange} className="hidden"   />
+  </div>
+  {imageUrl && ( <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-3 rounded-lg" />)}
+  <div className="mt-3">
+  <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg mt-3">
+    Choose Image
+  </label>
+  <input  type="file" id="image-upload"onChange={handleImageChange}className="hidden"/>
+</div>
+           <div className="flex justify-end space-x-4 mt-5">
             <button onClick={()=>{resetForm(); onClose();}} className="px-5 py-2 bg-gray-300 rounded-lg">
               Cancel
             </button>
