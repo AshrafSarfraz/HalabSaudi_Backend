@@ -9,6 +9,7 @@ interface CategoriesDropdownProps {
 const CategoriesDropdown: React.FC<CategoriesDropdownProps> = ({ selectedCategory, onCategoryChange }) => {
   const categories: string[] = [
     "Food and Drink",
+    "Chocolate and Gifts",
     "Beauty and Spa",
     "Health and Fitness",
     "Fun and Leisure",

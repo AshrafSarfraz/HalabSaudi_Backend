@@ -38,7 +38,7 @@ const Home = () => {
     <Layout>
       <div className="container mt-6 mx-auto p-4">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-800">All Restaurants</h1>
+          <h1 className="text-4xl font-bold text-gray-800">All Brands</h1>
         </div>
 
         {/* Loader */}
