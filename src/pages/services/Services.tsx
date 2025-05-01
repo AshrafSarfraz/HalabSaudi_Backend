@@ -13,6 +13,7 @@ interface VenusEntry {
   PhoneNumber:string;
   longitude: string;
   latitude: string;
+  address:string;
   discount: string;
   startAt: string;
   endAt: string;
@@ -144,13 +145,13 @@ const Services: React.FC = () => {
                       <td className="border p-3 text-center space-x-2">
                         <button
                           onClick={() => openModal(venue)}
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3  py-1 rounded transition duration-200"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteVenus(venue.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-200"
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 mt-2 rounded transition duration-200"
                         >
                           Delete
                         </button>

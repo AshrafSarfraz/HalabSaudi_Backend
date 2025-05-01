@@ -21,6 +21,7 @@ interface ServicesModalProps {
     PhoneNumber: string;
     longitude: string;
     latitude: string;
+    address:string;
     discount: string;
     startAt: string;
     endAt: string;
@@ -43,6 +44,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [descriptionEng, setDescriptionEng] = useState("");
   const [descriptionArabic, setDescriptionArabic] = useState("");
   const [PhoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
@@ -70,6 +72,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setPhoneNumber("");
     setLongitude("");
     setLatitude("");
+    setAddress("");
     setDiscount("");
     setStartAt("");
     setEndAt("");
@@ -82,6 +85,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setSelectedCountry("");
     setStatus("");
     setImageUrl("");
+    setPdfFile(null);
     setPdfUrl(""); // Reset PDF URL when form is reset
   };
 
@@ -94,6 +98,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setPhoneNumber(editData.PhoneNumber || "");
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
+      setAddress(editData.address || "");
       setDiscount(editData.discount || "");
       setStartAt(editData.startAt || "");
       setEndAt(editData.endAt || "");
@@ -155,6 +160,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         descriptionEng,
         descriptionArabic,
         PhoneNumber,
+        address,
         longitude,
         latitude,
         discount,
@@ -204,9 +210,11 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
                   {editData ? "Edit Service" : "Add New Service"}
                 </h2>
       
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <input type="text" value={nameEng} onChange={(e) => setNameEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Name in English" />
                   <input type="text" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Name in Arabic" />
+                  <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Discount" />
+              
                 </div>
       
                 <div className="grid grid-cols-2 gap-4 mt-3">
@@ -217,8 +225,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
                 <div className="grid grid-cols-3 gap-4 mt-3">
                  <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
                  <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
-                  <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Discount" />
-                </div>
+                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
+                 </div>
       
                 <div className="grid grid-cols-3 gap-4 mt-3">
                 <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" /> 
@@ -265,29 +273,26 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
                </div>
 
                
-               <div className="mt-5">
-  {/* Custom Label for PDF Input */}
-  {(pdfFile || pdfUrl) && (
-  <div className="mb-3 bg-gray-100 rounded-lg w-[100%] p-3">
- <span>
-  {pdfFile 
-    ? pdfFile.name 
-    : decodeURIComponent(pdfUrl.split('/').pop()?.split('?')[0]).split('/').pop()}
-</span>
-  </div>
-)}
-  <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg">
-    Choose Menu
-  </label> 
-  <input type="file" id="pdf-upload"  onChange={handlePdfChange} className="hidden"   />
-  </div>
-  {imageUrl && ( <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-3 rounded-lg" />)}
-  <div className="mt-3">
-  <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg mt-3">
-    Choose Image
-  </label>
-  <input  type="file" id="image-upload"onChange={handleImageChange}className="hidden"/>
-</div>
+             <div className="  mt-5  ">
+             <div className="  mt-5  ">
+            {/* Custom Label for PDF Input */}
+            {(pdfFile || pdfUrl) && (  <div className="mb-5 mt-5 bg-gray-100 rounded-lg w-[100%] p-3">
+              <span>  {pdfFile && 'name' in pdfFile ? pdfFile.name: typeof pdfUrl === 'string'? decodeURIComponent(pdfUrl.split('/').pop()?.split('?')[0] || '').split('/').pop(): 'Unknown File'}
+              </span>
+            </div>)}
+            <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-11 py-3 rounded-lg">
+              Choose Menu PDF
+            </label> 
+            <input type="file" id="pdf-upload"  onChange={handlePdfChange} className="hidden"   />
+            </div>
+           {imageUrl && ( <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-6  rounded-lg" />)}
+           <div className="mt-6">
+          <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-10 py-3 rounded-lg mt-3">
+           Choose Logo Image
+          </label>
+          <input  type="file" id="image-upload"onChange={handleImageChange}className="hidden"/>
+          </div>
+          </div>
 
 
 
