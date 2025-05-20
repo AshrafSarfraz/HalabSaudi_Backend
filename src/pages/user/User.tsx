@@ -3,7 +3,6 @@ import Layout from "../../component/layout/Layout";
 import {
   collection,
   onSnapshot,
-  getDocs,
   query,
 } from "firebase/firestore";
 import { fireDB } from "../../firebase/FirebaseConfig";
