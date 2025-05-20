@@ -98,7 +98,7 @@ const Services: React.FC = () => {
             onClick={() => openModal()}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition duration-200 shadow-md"
           >
-            + Add Venue
+            + Add Brands
           </button>
         </div>
 
@@ -113,12 +113,12 @@ const Services: React.FC = () => {
                 <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
                   <th className="border p-3 text-center">Logo</th>
                   <th className="border p-3 text-center">Brand Name</th>
+                  <th className="border p-3 text-center">Venue</th>
                   <th className="border p-3 text-center">Discount</th>
                   <th className="border p-3 text-center">City</th>
                   <th className="border p-3 text-center">Is Best Seller</th>
                   <th className="border p-3 text-center">Pin</th>
-                  <th className="border p-3 text-center">Discount Star At</th>
-                  <th className="border p-3 text-lcenter">Discount End At</th>
+                  <th className="border p-3 text-lcenter">Contract End At</th>
                   <th className="border p-3 text-center">Actions</th>
                 </tr>
               </thead>
@@ -134,11 +134,11 @@ const Services: React.FC = () => {
                         />
                       </td>
                       <td className="border p-3 text-gray-800 text-center">{venue.nameEng}</td>
+                      <td className="border p-3 text-gray-800 text-center">{venue.selectedVenue}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.discount}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.selectedCity}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.isBestSeller}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.pin}</td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.startAt}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.endAt}</td>
                      
                      
