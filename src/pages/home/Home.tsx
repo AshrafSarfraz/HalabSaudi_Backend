@@ -65,7 +65,7 @@ const Home = () => {
                         className="w-full h-40 object-cover rounded-2xl mb-4"
                       />
                       <h3 className="text-xl font-bold text-gray-800">{restaurant.nameEng}</h3>
-                      <p className="text-gray-600">{restaurant.selectedCity}, {restaurant.selectedCountry}</p>
+                      <p className="text-gray-600">{restaurant.selectedVenue}, {restaurant.selectedCountry}</p>
                     </div>
                   ))}
                 </div>

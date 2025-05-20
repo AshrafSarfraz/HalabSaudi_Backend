@@ -27,18 +27,18 @@ export const User: React.FC = () => {
           ...doc.data(),
         };
 
-        const redeemedRef = collection(
-          fireDB,
-          "users",
-          doc.id,
-          "redeemed_discounts"
-        );
-        const redeemedSnapshot = await getDocs(redeemedRef);
-        const redeemedCount = redeemedSnapshot.size;
+        // const redeemedRef = collection(
+        //   fireDB,
+        //   "users",
+        //   doc.id,
+        //   "redeemed_discounts"
+        // );
+        // const redeemedSnapshot = await getDocs(redeemedRef);
+        // const redeemedCount = redeemedSnapshot.size;
 
         userArray.push({
           ...userData,
-          redeemedCount,
+          //  redeemedCount,
         });
       }
 
@@ -95,7 +95,7 @@ export const User: React.FC = () => {
                     <th className="border p-2">Name</th>
                     <th className="border p-2">Phone Number</th>
                     <th className="border p-2">Account Created At</th>
-                    <th className="border p-2">Redeemed Count</th>
+                    {/* <th className="border p-2">Redeemed Count</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -108,9 +108,9 @@ export const User: React.FC = () => {
                           ? user.createdAt.toDate().toLocaleString()
                           : "N/A"}
                       </td>
-                      <td className="border p-2 text-center">
+                      {/* <td className="border p-2 text-center">
                         {user.redeemedCount ?? 0}
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
