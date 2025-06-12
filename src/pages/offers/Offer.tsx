@@ -16,6 +16,8 @@ interface VenusEntry {
   longitude: string;
   latitude: string;
   discount: string;
+  Time_sat_to_thrusday:string;
+  Time_Fri_to_Sat:string;
   startAt: string;
   endAt: string;
   pin: string;
