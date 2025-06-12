@@ -23,6 +23,10 @@ interface ServicesModalProps {
     latitude: string;
     address:string;
     discount: string;
+    // New
+    Time_sat_to_thrusday:string;
+    Time_Fri_to_Sat:string;
+
     startAt: string;
     endAt: string;
     pin: string;
@@ -48,6 +52,10 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
+// new data
+  const [Time_sat_to_thrusday, setTime_sat_to_thrusday] = useState("");
+  const [Time_Fri_to_Sat, setTime_Fri_to_Sat] = useState("");
+  
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
   const [pin, setPin] = useState("");
@@ -77,6 +85,10 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setLongitude("");
     setLatitude("");
     setDiscount("");
+    // new 
+    setTime_sat_to_thrusday(""),
+   setTime_Fri_to_Sat(""),
+
     setStartAt("");
     setEndAt("");
     setPin("");
@@ -104,6 +116,12 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setDiscount(editData.discount || "");
+       //new
+       setTime_sat_to_thrusday(editData.Time_sat_to_thrusday || "");
+       setTime_Fri_to_Sat(editData.Time_Fri_to_Sat || "");
+
+
+
       setStartAt(editData.startAt || "");
       setEndAt(editData.endAt || "");
       setPin(editData.pin || "");
@@ -164,6 +182,10 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         longitude,
         latitude,
         discount,
+         // new
+         Time_sat_to_thrusday,
+         Time_Fri_to_Sat,
+
         startAt,
         endAt,
         selectedCategory,
@@ -207,7 +229,7 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     isOpen && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
         {loading && <Loader />}
-        <div className="bg-white p-6 rounded-lg w-[90%] max-w-3xl h-[80vh] overflow-y-auto">
+        <div className="bg-white p-6 rounded-lg w-[90%] max-w-5xl h-[80vh] overflow-y-auto">
           <h2 className="text-2xl font-semibold mb-5 text-gray-800">
             {editData ? "Edit Offer" : "Add New Offer"}
           </h2>
@@ -223,18 +245,24 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In English"></textarea>
             <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In Arabic"></textarea>
           </div>
+         
+         <div className="grid grid-cols-3 gap-4 mt-3">
+           <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" />      
+           <input placeholder="Timing Sat-Thru) " value={Time_sat_to_thrusday} onChange={e => setTime_sat_to_thrusday(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
+           <input placeholder="Timing Fri-Sat " value={Time_Fri_to_Sat} onChange={e => setTime_Fri_to_Sat(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
+      
+        </div>
 
-     
+
 
           <div className="grid grid-cols-3 gap-4 mt-3">
+                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
                  <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
                  <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
-                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
                  </div>
 
           <div className="grid grid-cols-3 gap-4 mt-3">
-          <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" /> 
-                  <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
+                 <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
                   <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
 
           </div>
@@ -251,17 +279,16 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                  <option value="Yes">Yes</option>
                  <option value="No">No</option>
           </select>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+                 <option value="">Is Status </option>
+                 <option value="Yes">Yes</option>
+                 <option value="No">No</option>
+          </select>
           <select value={isVenue} onChange={(e) => setIsVenue(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
                  <option value="">Is Venue</option>
                  <option value="Yes">Yes</option>
                  <option value="No">No</option>
           </select>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
-                 <option value="">Is Status Active</option>
-                 <option value="Yes">Yes</option>
-                 <option value="No">No</option>
-          </select>
-     
           </div>
          <div className="mt-3 ">
                   {isVenue === "Yes" && ( <VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /> )}

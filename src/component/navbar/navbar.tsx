@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
                   <Link to={'/'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2" >Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Users</Link>
                   <Link to={'/venues'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Venues</Link>
-                  <Link to={'/services'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Services</Link>
+                  <Link to={'/services'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Brands</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Cities</Link>
@@ -102,7 +102,7 @@ export const Navbar: React.FC = () => {
                   <Link to={'/'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Home</Link>
                   <Link to={'/users'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Users</Link>
                   <Link to={'/venues'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Venues</Link>
-                  <Link to={'/services'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Services</Link>
+                  <Link to={'/services'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Brands</Link>
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
