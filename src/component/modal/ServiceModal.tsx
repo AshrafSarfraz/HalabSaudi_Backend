@@ -291,11 +291,11 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         {isVenue === "Yes" && <div className="mt-3"><VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /></div>}
 
          <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Starting Date:</label>
+         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Contract Starting Date:</label>
          <input  type="date" value={startAt}  onChange={(e) => setStartAt(e.target.value)}  className="border p-2 rounded-lg w-full  text-[13px]" />
         </div>
          <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Ending Date:</label>
+         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Contract Ending Date:</label>
        <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full text-[13px] "  />
         </div>
        </div>
