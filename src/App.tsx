@@ -12,6 +12,7 @@ import CityManagementScreen from "./pages/cities/Cities";
 import AccountManagementScreen from "./pages/accounts/Account";
 import Login from "./pages/Authentication/login/Login";
 import NoPage from "./pages/NoPage";
+import AddBrandScreen from "./pages/Mobile_Screen/AddBrandsData";
 
 interface ProtectedRoutesProps {
   children: ReactNode;
@@ -31,6 +32,7 @@ function App() {
           <Route path="/accounts" element={<ProtectedRoutes><AccountManagementScreen/></ProtectedRoutes>} />
           <Route path="/cities" element={<ProtectedRoutes><CityManagementScreen/></ProtectedRoutes>} />
           <Route path="/translation" element={<ProtectedRoutes><Translation/></ProtectedRoutes>} />
+          <Route path="/AddBrand/12652154214641264521465124xxp1" element={<AddBrandScreen/>} />
           <Route path="/*" element={<NoPage />} />
         </Routes>
         <ToastContainer />
