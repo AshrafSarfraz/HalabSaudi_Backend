@@ -307,11 +307,11 @@ const AddBrandScreen: React.FC = () => {
         ) : null}
 
         <label
-          style={{ backgroundColor: "#7CC4A6" }}
+       
           htmlFor="pdf-upload"
-          className="cursor-pointer text-center bg-blue-500 text-white px-6 py-2 w-[100%] rounded-lg inline-block"
+          className="cursor-pointer text-center bg-blue-500 text-white bg-green-600  font-bold   px-6 py-2.5 w-[100%] rounded-lg inline-block"
         >
-          Choose Menu PDF
+          Choose Menu ( PDF )
         </label>
         <input
           type="file"
@@ -331,11 +331,10 @@ const AddBrandScreen: React.FC = () => {
       )}
       <div className="mt-3">
         <label
-          style={{ backgroundColor: "#7CC4A6" }}
           htmlFor="image-upload"
-          className="cursor-pointer bg-blue-500 text-center text-white px-5 py-2 w-[100%] rounded-lg inline-block"
+          className="cursor-pointer bg-blue-500 text-center text-white  font-bold bg-green-600   px-5 py-2.5 w-[100%] rounded-lg inline-block"
         >
-          Choose Logo Image
+          Choose Brand Logo
         </label>
         <input
           type="file"
@@ -347,7 +346,7 @@ const AddBrandScreen: React.FC = () => {
       <button
         style={{ backgroundColor: "#005029" }}
         onClick={()=>setShowTimings(true)}
-        className="w-[100%] mt-5 mb-10 bg-blue-600 text-white px-6 py-2 rounded-lg"
+        className="w-[100%] mt-5 mb-10 bg-blue-600 text-white   font-bold   px-6 py-2.5 rounded-lg"
       >
         Continue
       </button>
