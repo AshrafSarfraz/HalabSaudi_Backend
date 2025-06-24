@@ -188,7 +188,7 @@ const AddBrandScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen mt-5 px-1 bg-white mx-auto relative">
+    <div className="min-h-screen mt-7 px-1 bg-white mx-auto relative">
       {loading && (
         <div className="fixed inset-0  flex justify-center items-center text-white text-xl z-40">
         <span   className="animate-spin rounded-full h-12 w-12 border-green-800 border-4 border-t-transparent"></span>
@@ -347,10 +347,11 @@ const AddBrandScreen: React.FC = () => {
       <button
         style={{ backgroundColor: "#005029" }}
         onClick={()=>setShowTimings(true)}
-        className="w-[100%] mt-5 bg-blue-600 text-white px-6 py-2 rounded-lg"
+        className="w-[100%] mt-5 mb-10 bg-blue-600 text-white px-6 py-2 rounded-lg"
       >
         Continue
       </button>
+        
         </div>
       ):
       (
