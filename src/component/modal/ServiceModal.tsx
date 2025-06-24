@@ -12,35 +12,7 @@ import CitiesDropdown from "../dropdown/CityDropDown";
 interface ServicesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editData?: {
-    id: string;
-    nameEng: string;
-    nameArabic: string;
-    descriptionEng: string;
-    descriptionArabic: string;
-    PhoneNumber: string;
-    longitude: string;
-    latitude: string;
-    address: string;
-
-// New
-    Time_sat_to_thrusday:string;
-    Time_Fri_to_Sat:string;
-
-    discount: string;
-    startAt: string;
-    endAt: string;
-    pin: string;
-    isBestSeller: string;
-    isVenue: string;
-    selectedVenue: string;
-    selectedCategory: string;
-    selectedCity: string;
-    selectedCountry: string;
-    status: string;
-    img: string;
-    pdfUrl: string;
-  } | null;
+  editData?: any;
 }
 
 const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
@@ -53,9 +25,16 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [address, setAddress] = useState("");
-// new
-  const [Time_sat_to_thrusday, setTime_sat_to_thrusday] = useState("");
-  const [Time_Fri_to_Sat, setTime_Fri_to_Sat] = useState("");
+
+  const [timings, setTimings] = useState({
+    monday: "",
+    tuesday: "",
+    wednesday: "",
+    thursday: "",
+    friday: "",
+    saturday: "",
+    sunday: "",
+  });
 
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
@@ -83,11 +62,15 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setLatitude("");
     setAddress("");
     setDiscount("");
-// new 
-   setTime_sat_to_thrusday(""),
-   setTime_Fri_to_Sat(""),
-  
-
+    setTimings({
+      monday: "",
+      tuesday: "",
+      wednesday: "",
+      thursday: "",
+      friday: "",
+      saturday: "",
+      sunday: "",
+    });
     setStartAt("");
     setEndAt("");
     setPin("");
@@ -97,7 +80,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setSelectedCategory("");
     setSelectedCity("");
     setSelectedCountry("");
-    setStatus("");
+    setStatus("No");
     setImageUpload(null);
     setImageUrl("");
     setPdfFile(null);
@@ -115,10 +98,15 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setAddress(editData.address || "");
-      //new
-      setTime_sat_to_thrusday(editData.Time_sat_to_thrusday || "");
-      setTime_Fri_to_Sat(editData.Time_Fri_to_Sat || "");
-
+      setTimings(editData.timings || {
+        monday: "",
+        tuesday: "",
+        wednesday: "",
+        thursday: "",
+        friday: "",
+        saturday: "",
+        sunday: "",
+      });
       setStartAt(editData.startAt || "");
       setEndAt(editData.endAt || "");
       setPin(editData.pin || "");
@@ -149,14 +137,18 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     }
   };
 
+  const handleTimingChange = (day: string, value: string) => {
+    setTimings((prev) => ({ ...prev, [day]: value }));
+  };
+
   const generatePin = () => {
     const randomPin = Math.floor(100000 + Math.random() * 900000);
     setPin(randomPin.toString());
   };
 
   const saveVenue = async () => {
-    if (!nameEng ||!nameArabic || !descriptionEng || !descriptionArabic|| !longitude || !latitude ||
-        !address  ||!PhoneNumber  || !selectedCategory || !selectedCity || (!imageUpload && !editData)) {
+    if (!nameEng || !nameArabic || !descriptionEng || !descriptionArabic || !longitude || !latitude ||
+      !address || !PhoneNumber || !selectedCategory || !selectedCity || (!imageUpload && !editData)) {
       return toast.error("All fields are required!");
     }
 
@@ -187,10 +179,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         longitude,
         latitude,
         address,
-  // new
-        Time_sat_to_thrusday,
-        Time_Fri_to_Sat,
-           
+        timings,
         startAt,
         endAt,
         selectedCategory,
@@ -227,37 +216,31 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-10">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-10 z-50">
       {loading && <Loader />}
       <div className="bg-white p-6 rounded-lg w-[90%] max-w-5xl h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-semibold mb-5">{editData ? "Edit Brand Details" : "Add New Brand"}</h2>
 
         <div className="grid grid-cols-3 gap-4">
-          <input placeholder="Name in English" value={nameEng} onChange={e => setNameEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-          <input placeholder="Name in Arabic" value={nameArabic} onChange={e => setNameArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-          <input placeholder="Discount" value={discount} onChange={e => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
+          <input placeholder="Name in English" value={nameEng} onChange={e => setNameEng(e.target.value)} className="border p-3 rounded-lg" />
+          <input placeholder="Name in Arabic" value={nameArabic} onChange={e => setNameArabic(e.target.value)} className="border p-3 rounded-lg" />
+          <input placeholder="Discount" value={discount} onChange={e => setDiscount(e.target.value)} className="border p-3 rounded-lg" />
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-3">
-          <textarea placeholder="Description In English" value={descriptionEng} onChange={e => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-          <textarea placeholder="Description In Arabic" value={descriptionArabic} onChange={e => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-        </div>
-
-         {/* New data */}
-         <div className="grid grid-cols-3 gap-4 mt-3">
-         <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-         <input placeholder="Timing Sat-Thru) " value={Time_sat_to_thrusday} onChange={e => setTime_sat_to_thrusday(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-         <input placeholder="Timing Fri-Sat " value={Time_Fri_to_Sat} onChange={e => setTime_Fri_to_Sat(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
+          <textarea placeholder="Description In English" value={descriptionEng} onChange={e => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg" />
+          <textarea placeholder="Description In Arabic" value={descriptionArabic} onChange={e => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg" />
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-3">
-          <input placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-          <input placeholder="Latitude" value={latitude} onChange={e => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-          <input placeholder="Longitude" value={longitude} onChange={e => setLongitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-       </div>
+          <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg" />
+          <input placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} className="border p-3 rounded-lg" />
+          <input placeholder="Latitude" value={latitude} onChange={e => setLatitude(e.target.value)} className="border p-3 rounded-lg" />
+        </div>
 
         <div className="grid grid-cols-3 gap-4 mt-3">
-          <input value={pin} readOnly className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Generate Pin" />
+          <input placeholder="Longitude" value={longitude} onChange={e => setLongitude(e.target.value)} className="border p-3 rounded-lg" />
+          <input value={pin} readOnly className="border p-3 rounded-lg" placeholder="Generate Pin" />
           <button onClick={generatePin} className="bg-blue-600 text-white py-3 rounded-lg text-sm">Generate</button>
         </div>
 
@@ -266,8 +249,6 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
           <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
         </div>
-
-  
 
         <div className="grid grid-cols-3 gap-4 mt-3">
           <select value={isBestSeller} onChange={e => setIsBestSeller(e.target.value)} className="border p-3 rounded-lg text-sm">
@@ -287,36 +268,48 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           </select>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-3">
         {isVenue === "Yes" && <div className="mt-3"><VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /></div>}
 
-         <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Contract Starting Date:</label>
-         <input  type="date" value={startAt}  onChange={(e) => setStartAt(e.target.value)}  className="border p-2 rounded-lg w-full  text-[13px]" />
+        <div className="grid grid-cols-2 gap-4 mt-3">
+          <div>
+            <label className="text-sm">Contract Start Date</label>
+            <input type="date" value={startAt} onChange={e => setStartAt(e.target.value)} className="border p-2 rounded-lg w-full" />
+          </div>
+          <div>
+            <label className="text-sm">Contract End Date</label>
+            <input type="date" value={endAt} onChange={e => setEndAt(e.target.value)} className="border p-2 rounded-lg w-full" />
+          </div>
         </div>
-         <div>
-         <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Contract Ending Date:</label>
-       <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full text-[13px] "  />
+
+        {/* Timings input */}
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          {Object.entries(timings).map(([day, value]) => (
+            <div key={day}>
+              <label className="text-sm capitalize">{day}</label>
+              <input
+                placeholder="e.g. 10:00 AM - 9:00 PM"
+                value={value}
+                onChange={(e) => handleTimingChange(day, e.target.value)}
+                className="border p-2 rounded-lg w-full text-sm"
+              />
+            </div>
+          ))}
         </div>
-       </div>
 
-      
-
-     
+        {/* PDF and Image Upload */}
         <div className="mt-5">
           {pdfFile || pdfUrl ? (
             <div className="mb-4 bg-gray-100 p-3 rounded-lg">
               <span>{pdfFile?.name || decodeURIComponent(pdfUrl.split("/").pop()?.split("?")[0] || "")}</span>
             </div>
           ) : null}
-
-          <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-6 py-2 w-[190px] rounded-lg inline-block">Choose Menu PDF</label>
+          <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg inline-block">Choose Menu PDF</label>
           <input type="file" id="pdf-upload" className="hidden" onChange={handlePdfChange} />
         </div>
 
         {imageUrl && <img src={imageUrl} alt="Preview" className="w-24 h-24 object-cover mt-4 rounded-lg" />}
         <div className="mt-3">
-          <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 w-[190px] rounded-lg inline-block">Choose Logo Image</label>
+          <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg inline-block">Choose Logo Image</label>
           <input type="file" id="image-upload" className="hidden" onChange={handleImageChange} />
         </div>
 
@@ -330,8 +323,3 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
 };
 
 export default ServicesModal;
-
-
-
-
-

@@ -4,7 +4,7 @@ import { fireDB, storage } from "../../firebase/FirebaseConfig";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import CategoriesDropdown from "../../component/dropdown/CategoriesDropDown";
-
+import Back from '../../assets/icon/Back.png'
 
 
 
@@ -120,6 +120,7 @@ const AddBrandScreen: React.FC = () => {
     if (
       !nameEng ||
       !descriptionEng ||
+      !discount||
       !address ||
       !PhoneNumber ||
       !selectedCategory ||
@@ -190,77 +191,103 @@ const AddBrandScreen: React.FC = () => {
     <div className="min-h-screen mt-5 px-1 bg-white mx-auto relative">
       {loading && (
         <div className="fixed inset-0  flex justify-center items-center text-white text-xl z-40">
-        <span className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></span>
+        <span   className="animate-spin rounded-full h-12 w-12 border-green-800 border-4 border-t-transparent"></span>
         </div>
       )}
      {
-      showTimings===false?(
-        <div>
-      <div className="grid grid-cols-1 gap-4">
-        <input
-          placeholder="Name in English"
-          value={nameEng}
-          onChange={(e) => setNameEng(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-        <input
-          placeholder="Name in Arabic"
-          value={nameArabic}
-          onChange={(e) => setNameArabic(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-        <input
-          placeholder="Discount"
-          value={discount}
-          onChange={(e) => setDiscount(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 mt-4">
-        <textarea
-          placeholder="Description In English"
-          value={descriptionEng}
-          onChange={(e) => setDescriptionEng(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-        <textarea
-          placeholder="Description In Arabic"
-          value={descriptionArabic}
-          onChange={(e) => setDescriptionArabic(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 mt-4">
-        <input
-          placeholder="Phone Number"
-          value={PhoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 mt-4">
-        <input
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-        <input
-          placeholder="Latitude"
-          value={latitude}
-          onChange={(e) => setLatitude(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-        <input
-          placeholder="Longitude"
-          value={longitude}
-          onChange={(e) => setLongitude(e.target.value)}
-          className="border p-3 rounded-lg placeholder:text-[13px]"
-        />
-      </div>
+     showTimings === false ? (
+      <div>
+        {/* Brand Info */}
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Brand Name (En)</label>
+            <input className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+             placeholder="e.g. West Walk" value={nameEng} onChange={(e) => setNameEng(e.target.value)} />
+          </div>
+    
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Brand Name (Ar)</label>
+            <input        className="border p-3 rounded-lg placeholder:text-[13px] w-[100%]"
+              placeholder="مثال: ويست ووك"  value={nameArabic}   onChange={(e) => setNameArabic(e.target.value)} />
+          </div>
+    
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Discount (%)</label>
+            <input
+              placeholder="e.g. 15"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+        </div>
+    
+        {/* Descriptions */}
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Description (En)</label>
+            <textarea
+              placeholder="e.g. A fine dining restaurant offering Italian and Arabic food"
+              value={descriptionEng}
+              onChange={(e) => setDescriptionEng(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Description (Ar)</label>
+            <textarea
+              placeholder="مثال: مطعم فاخر يقدم المأكولات الإيطالية والعربية"
+              value={descriptionArabic}
+              onChange={(e) => setDescriptionArabic(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%]  "
+            />
+          </div>
+        </div>
+    
+        {/* Contact + Location */}
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Phone Number</label>
+            <input
+              placeholder="Phone Number"
+              value={PhoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+    
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Address</label>
+            <input
+              placeholder="e.g. West Walk, Al Sadd Street, Doha"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+    
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Latitude (optional)</label>
+            <input
+              placeholder="e.g. 25.276987"
+              value={latitude}
+              onChange={(e) => setLatitude(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+    
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Longitude (optional) </label>
+            <input
+              placeholder="e.g. 25.276987"
+              value={longitude}
+              onChange={(e) => setLongitude(e.target.value)}
+              className="border p-3 rounded-lg placeholder:text-[13px] w-[100%] "
+            />
+          </div>
+        </div>
+    
+        {/* Dropdown */}
 
       <div className="h-12 grid grid-cols-1 gap-4 mt-4">
         <CategoriesDropdown
@@ -293,6 +320,7 @@ const AddBrandScreen: React.FC = () => {
           onChange={handlePdfChange}
         />
       </div>
+
 
       {imageUrl && (
         <img
@@ -327,9 +355,9 @@ const AddBrandScreen: React.FC = () => {
       ):
       (
         <div>
-      <div className="grid grid-cols-1 gap-4 mt-4">
+      <div className="grid grid-cols-1 gap-4 mt-1">
         <p className="text-lg font-semibold flex items-center gap-2">
-        <button  onClick={() => setShowTimings(false)}  className="p-1 rounded hover:bg-gray-200" > <img src="/path/to/back-icon.png" alt="Back"className="w-5 h-5"/> </button>
+        <button  onClick={() => setShowTimings(false)}  className="p-1 rounded hover:bg-gray-200" > <img src={Back} alt="Back"className="w-5 h-5"/> </button>
         Working Hours
         </p>
 
@@ -372,7 +400,7 @@ const AddBrandScreen: React.FC = () => {
             <p className="mb-6">Our company will contact you soon.</p>
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="bg-green-600 text-white px-4 py-2 rounded"
+              className="bg-green-800 text-white px-8 py-3 rounded-xl"
             >
               Close
             </button>
