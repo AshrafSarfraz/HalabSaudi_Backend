@@ -179,6 +179,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         longitude,
         latitude,
         address,
+           // new
         timings,
         startAt,
         endAt,
@@ -258,8 +259,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           </select>
           <select value={status} onChange={e => setStatus(e.target.value)} className="border p-3 rounded-lg text-sm">
             <option value="">Status</option>
-            <option value="No">Inactive</option>
-            <option value="Yes">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Active">Active</option>
           </select>
           <select value={isVenue} onChange={e => setIsVenue(e.target.value)} className="border p-3 rounded-lg text-sm">
             <option value="">Is Venue</option>

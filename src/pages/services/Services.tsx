@@ -117,8 +117,9 @@ const Services: React.FC = () => {
                   <th className="border p-3 text-center">Brand Name</th>
                   <th className="border p-3 text-center">Venue</th>
                   <th className="border p-3 text-center">Discount</th>
+
                   <th className="border p-3 text-center">City</th>
-                  <th className="border p-3 text-center">Is Best Seller</th>
+                  <th className="border p-3 text-center">Status</th>
                   <th className="border p-3 text-center">Pin</th>
                   <th className="border p-3 text-lcenter">Contract End At</th>
                   <th className="border p-3 text-center">Actions</th>
@@ -139,7 +140,7 @@ const Services: React.FC = () => {
                       <td className="border p-3 text-gray-800 text-center">{venue.selectedVenue}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.discount}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.selectedCity}</td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.isBestSeller}</td>
+                      <td className={`border p-3 text-gray-800 text-center ${venue.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{venue.status}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.pin}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.endAt}</td>
                      

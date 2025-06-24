@@ -12,34 +12,7 @@ import CitiesDropdown from "../dropdown/CityDropDown";
 interface ServicesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editData?: {
-    id: string;
-    nameEng: string;
-    nameArabic: string;
-    descriptionEng: string;
-    descriptionArabic: string;
-    PhoneNumber:string;
-    longitude: string;
-    latitude: string;
-    address:string;
-    discount: string;
-    // New
-    Time_sat_to_thrusday:string;
-    Time_Fri_to_Sat:string;
-
-    startAt: string;
-    endAt: string;
-    pin: string;
-    isBestSeller: string;
-    isVenue: string;
-    selectedVenue: string;
-    selectedCategory: string;
-    selectedCity: string;
-    selectedCountry: string;
-    status: string;
-    img: string;
-    pdfUrl: string; // Add PDF URL
-  } | null;
+  editData?:any;
 }
 
 const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
@@ -53,8 +26,15 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
 // new data
-  const [Time_sat_to_thrusday, setTime_sat_to_thrusday] = useState("");
-  const [Time_Fri_to_Sat, setTime_Fri_to_Sat] = useState("");
+  const [timings, setTimings] = useState({
+    monday: "",
+    tuesday: "",
+    wednesday: "",
+    thursday: "",
+    friday: "",
+    saturday: "",
+    sunday: "",
+  });
   
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
@@ -86,8 +66,15 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setLatitude("");
     setDiscount("");
     // new 
-    setTime_sat_to_thrusday(""),
-   setTime_Fri_to_Sat(""),
+    setTimings({
+      monday: "",
+      tuesday: "",
+      wednesday: "",
+      thursday: "",
+      friday: "",
+      saturday: "",
+      sunday: "",
+    });
 
     setStartAt("");
     setEndAt("");
@@ -117,8 +104,15 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setLatitude(editData.latitude || "");
       setDiscount(editData.discount || "");
        //new
-       setTime_sat_to_thrusday(editData.Time_sat_to_thrusday || "");
-       setTime_Fri_to_Sat(editData.Time_Fri_to_Sat || "");
+       setTimings(editData.timings || {
+        monday: "",
+        tuesday: "",
+        wednesday: "",
+        thursday: "",
+        friday: "",
+        saturday: "",
+        sunday: "",
+      });
 
 
 
@@ -183,8 +177,7 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         latitude,
         discount,
          // new
-         Time_sat_to_thrusday,
-         Time_Fri_to_Sat,
+         timings,
 
         startAt,
         endAt,
@@ -219,7 +212,9 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setLoading(false);
     }
   };
-
+  const handleTimingChange = (day: string, value: string) => {
+    setTimings((prev) => ({ ...prev, [day]: value }));
+  };
   const generatePin = () => {
     const randomPin = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit PIN
     setPin(randomPin.toString());
@@ -248,24 +243,20 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
          
          <div className="grid grid-cols-3 gap-4 mt-3">
            <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" />      
-           <input placeholder="Timing Sat-Thru) " value={Time_sat_to_thrusday} onChange={e => setTime_sat_to_thrusday(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-           <input placeholder="Timing Fri-Sat " value={Time_Fri_to_Sat} onChange={e => setTime_Fri_to_Sat(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" />
-      
+           <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
+          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
+                
         </div>
 
 
 
           <div className="grid grid-cols-3 gap-4 mt-3">
-                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
-                 <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
-                 <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
-                 </div>
-
-          <div className="grid grid-cols-3 gap-4 mt-3">
-                 <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
+                <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
+                <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
                   <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
 
-          </div>
+                 </div>
+
       
           <div className="grid grid-cols-3 gap-4 mt-3">
           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
@@ -304,21 +295,36 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
        <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full text-[13px] "  />
         </div>
        </div>
+         {/* Timings input */}
+         <div className="grid grid-cols-3 gap-4 mt-3 mb-2">
+          {Object.entries(timings).map(([day, value]) => (
+            <div key={day}>
+              <label className="text-sm capitalize">{day}</label>
+              <input
+                placeholder="e.g. 10:00 AM - 9:00 PM"
+                value={value}
+                onChange={(e) => handleTimingChange(day, e.target.value)}
+                className="border p-2 rounded-lg w-full text-sm mt-1"
+              />
+            </div>
+          ))}
+        </div>
 
-       <div className="  mt-5  ">
+
+       <div className="  mt-10  ">
              <div className="  mt-5  ">
             {/* Custom Label for PDF Input */}
             {(pdfFile || pdfUrl) && (  <div className="mb-5 mt-5 bg-gray-100 rounded-lg w-[100%] p-3">
               <span>  {pdfFile && 'name' in pdfFile ? pdfFile.name: typeof pdfUrl === 'string'? decodeURIComponent(pdfUrl.split('/').pop()?.split('?')[0] || '').split('/').pop(): 'Unknown File'}
               </span>
             </div>)}
-            <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-11 py-3 rounded-lg">
+            <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-11 py-3 rounded-lg ">
               Choose Menu PDF
             </label> 
             <input type="file" id="pdf-upload"  onChange={handlePdfChange} className="hidden"   />
             </div>
            {imageUrl && ( <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-6  rounded-lg" />)}
-           <div className="mt-6">
+           <div className="mt-8">
           <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-10 py-3 rounded-lg mt-3">
            Choose Logo Image
           </label>
