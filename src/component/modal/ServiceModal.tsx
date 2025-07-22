@@ -158,13 +158,13 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       let uploadedPdfUrl = pdfUrl;
 
       if (imageUpload) {
-        const imageRef = ref(storage, `Brands/images/${imageUpload.name}`);
+        const imageRef = ref(storage, `H-Brands/images/${imageUpload.name}`);
         const snapshot = await uploadBytes(imageRef, imageUpload);
         uploadedImageUrl = await getDownloadURL(snapshot.ref);
       }
 
       if (pdfFile) {
-        const pdfRef = ref(storage, `Brands/pdfs/${pdfFile.name}`);
+        const pdfRef = ref(storage, `H-Brands/pdfs/${pdfFile.name}`);
         const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
         uploadedPdfUrl = await getDownloadURL(pdfSnapshot.ref);
       }
@@ -197,10 +197,10 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       };
 
       if (editData) {
-        await updateDoc(doc(fireDB, "Brands", editData.id), venueData);
+        await updateDoc(doc(fireDB, "H-Brands", editData.id), venueData);
         toast.success("Service updated successfully!");
       } else {
-        await addDoc(collection(fireDB, "Brands"), venueData);
+        await addDoc(collection(fireDB, "H-Brands"), venueData);
         toast.success("Service added successfully!");
       }
 

@@ -41,10 +41,10 @@ const CityModal: React.FC<CityModalProps> = ({ isOpen, onClose, editData }) => {
     setLoading(true);
     try {
       if (editData) {
-        await updateDoc(doc(fireDB, "Cities", editData.id), { cityName, countryName, countryCode });
+        await updateDoc(doc(fireDB, "H-Cities", editData.id), { cityName, countryName, countryCode });
         toast.success("City updated successfully!");
       } else {
-        await addDoc(collection(fireDB, "Cities"), {
+        await addDoc(collection(fireDB, "H-Cities"), {
           cityName,
           countryName,
           countryCode,

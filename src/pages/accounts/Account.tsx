@@ -32,7 +32,7 @@ const Accounts: React.FC = () => {
   // Fetch Data
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(fireDB, "Admins"), orderBy("time"));
+    const q = query(collection(fireDB, "H-Admins"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const accountsArray: AccountEntry[] = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -56,7 +56,7 @@ const Accounts: React.FC = () => {
     if (!confirm("Are you sure you want to delete this account?")) return;
 
     try {
-      await deleteDoc(doc(fireDB, "Admins", id));
+      await deleteDoc(doc(fireDB, "H-Admins", id));
       toast.success("Account deleted successfully!");
 
       // Remove the deleted account from the state

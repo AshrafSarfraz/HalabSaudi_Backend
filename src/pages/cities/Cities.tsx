@@ -32,7 +32,7 @@ const Cities: React.FC = () => {
   // Fetch Data
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(fireDB, "Cities"), orderBy("time"));
+    const q = query(collection(fireDB, "H-Cities"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const citiesArray: CityEntry[] = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -49,7 +49,7 @@ const Cities: React.FC = () => {
   const handleDeleteCity = async (id: string) => {
     if (!confirm("Are you sure you want to delete this city?")) return;
     try {
-      await deleteDoc(doc(fireDB, "Cities", id)); // Fixed collection name from "Cities" to "Venues"
+      await deleteDoc(doc(fireDB, "H-Cities", id)); // Fixed collection name from "Cities" to "Venues"
       toast.success("City deleted successfully!");
     } catch (error) {
       console.error("Error deleting document:", error);

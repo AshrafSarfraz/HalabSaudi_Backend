@@ -52,7 +52,7 @@ const Services: React.FC = () => {
   // fetch Data
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(fireDB, "Brands"), orderBy("time"));
+    const q = query(collection(fireDB, "H-Brands"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const venusArray: VenusEntry[] = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -69,7 +69,7 @@ const Services: React.FC = () => {
   const handleDeleteVenus = async (id: string) => {
     if (!confirm("Are you sure you want to delete this venue?")) return;
     try {
-      await deleteDoc(doc(fireDB, "Brands", id));
+      await deleteDoc(doc(fireDB, "H-Brands", id));
       alert("Deleted successfully");
     } catch (error) {
       console.error("Error deleting document:", error);

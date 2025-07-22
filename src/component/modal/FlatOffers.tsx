@@ -155,13 +155,13 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let pdfUrl = editData?.pdfUrl || "";
 
       if (imageUpload) {
-        const imageRef = ref(storage, `FlatOffer/images/${imageUpload.name}`);
+        const imageRef = ref(storage, `H-FlatOffer/images/${imageUpload.name}`);
         const snapshot = await uploadBytes(imageRef, imageUpload);
         url = await getDownloadURL(snapshot.ref);
       }
  // Upload PDF if new PDF is selected
             if (pdfFile) {
-              const pdfRef = ref(storage, `Brands/pdfs/${pdfFile.name}`);
+              const pdfRef = ref(storage, `H-Brands/pdfs/${pdfFile.name}`);
               const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
               pdfUrl = await getDownloadURL(pdfSnapshot.ref);
             }
@@ -196,11 +196,11 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       if (editData) {
         // Update existing data
-        await updateDoc(doc(fireDB, "FlatOffers", editData.id), venueData);
+        await updateDoc(doc(fireDB, "H-FlatOffers", editData.id), venueData);
         toast.success("Flat Offer updated successfully!");
       } else {
         // Add new data
-        await addDoc(collection(fireDB, "FlatOffers"), venueData);
+        await addDoc(collection(fireDB, "H-FlatOffers"), venueData);
         toast.success("Flat Offer added successfully!");
       }
       resetForm();

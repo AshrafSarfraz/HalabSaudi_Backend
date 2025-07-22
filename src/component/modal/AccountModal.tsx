@@ -45,10 +45,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose, editData }
     setLoading(true);
     try {
       if (editData) {
-        await updateDoc(doc(fireDB, "Admins", editData.id), { name, email, role,password });
+        await updateDoc(doc(fireDB, "H-Admins", editData.id), { name, email, role,password });
         toast.success("Account updated successfully!");
       } else {
-        await addDoc(collection(fireDB, "Admins"), {
+        await addDoc(collection(fireDB, "H-Admins"), {
           name,
           email,
           password,

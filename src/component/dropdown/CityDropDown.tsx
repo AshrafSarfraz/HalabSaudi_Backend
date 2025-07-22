@@ -14,7 +14,7 @@ const CitiesDropdown: React.FC<CitiesDropdownProps> = ({ selectedCity, onCityCha
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const snapshot = await getDocs(collection(fireDB, "Cities"));
+        const snapshot = await getDocs(collection(fireDB, "H-Cities"));
         const cityList = snapshot.docs.map((doc) => doc.data().cityName) as string[]; // Now it's a string array
         setCities(cityList);
       } catch (error) {

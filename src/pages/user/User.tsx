@@ -15,7 +15,7 @@ export const User: React.FC = () => {
   const usersPerPage = 15;
 
   useEffect(() => {
-    const q = query(collection(fireDB, "users"));
+    const q = query(collection(fireDB, "H-users"));
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       setLoading(true); // Start loader
       const userArray: any[] = [];

@@ -10,7 +10,7 @@ const Home = () => {
     const fetchRestaurants = async () => {
       const db = getFirestore();
       try {
-        const restaurantsSnap = await getDocs(collection(db, 'Brands'));
+        const restaurantsSnap = await getDocs(collection(db, 'H-Brands'));
         const restaurantsList = restaurantsSnap.docs.map(doc => doc.data());
 
         // Group restaurants by selectedCountry

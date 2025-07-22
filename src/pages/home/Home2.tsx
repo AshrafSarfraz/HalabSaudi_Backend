@@ -22,11 +22,11 @@ const Home2 = () => {
           citiesSnap,
           countriesSnap,
         ] = await Promise.all([
-          getDocs(collection(db, 'Brands')),
-          getDocs(collection(db, 'users')),
-          getDocs(collection(db, 'FlatOffers')),
-          getDocs(collection(db, 'Venues')),
-          getDocs(collection(db, 'Cities')),
+          getDocs(collection(db, 'H-Brands')),
+          getDocs(collection(db, 'H-users')),
+          getDocs(collection(db, 'H-FlatOffers')),
+          getDocs(collection(db, 'H-Venues')),
+          getDocs(collection(db, 'H-Cities')),
         ]);
 
         setCounts({

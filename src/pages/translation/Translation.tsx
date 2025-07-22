@@ -33,11 +33,11 @@ const Translation = () => {
 
     try {
       setUploading(true);
-      const storageRef = ref(storage, `uploads/${file.name}`);
+      const storageRef = ref(storage, `H-uploads/${file.name}`);
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
 
-      await addDoc(collection(fireDB, 'uploadedFiles'), {
+      await addDoc(collection(fireDB, 'H-uploadedFiles'), {
         name: file.name,
         url: downloadURL,
         size: file.size,
@@ -56,7 +56,7 @@ const Translation = () => {
   const fetchUploadedFiles = async () => {
     try {
       setLoadingFiles(true);
-      const querySnapshot = await getDocs(collection(fireDB, 'uploadedFiles'));
+      const querySnapshot = await getDocs(collection(fireDB, 'H-uploadedFiles'));
       const files = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -72,9 +72,9 @@ const Translation = () => {
   const handleDeleteFromFirebase = async (fileId: string, fileName: string) => {
     try {
       setDeletingId(fileId);
-      const fileRef = ref(storage, `uploads/${fileName}`);
+      const fileRef = ref(storage, `H-uploads/${fileName}`);
       await deleteObject(fileRef);
-      await deleteDoc(doc(fireDB, 'uploadedFiles', fileId));
+      await deleteDoc(doc(fireDB, 'H-uploadedFiles', fileId));
       fetchUploadedFiles();
     } catch (error) {
       console.error('Error deleting file:', error);

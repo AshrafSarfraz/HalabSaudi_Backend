@@ -14,7 +14,7 @@ const VenueDropdown: React.FC<VenueDropdownProps> = ({ selectedVenue, onVenueCha
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const snapshot = await getDocs(collection(fireDB, "Venues")); // Correct collection name (Venues, not Venus)
+        const snapshot = await getDocs(collection(fireDB, "H-Venues")); // Correct collection name (Venues, not Venus)
         const venueList = snapshot.docs.map((doc) => doc.data().venueName) as string[]; // Only store venue names
         setVenues(venueList);
       } catch (error) {

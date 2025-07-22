@@ -6,13 +6,13 @@ import { getStorage } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA6dRC22bmr79LQBZ-ipoXhLJcyvpULizk",
-  authDomain: "hala-b-saudi.firebaseapp.com",
-  projectId: "hala-b-saudi",
-  storageBucket: "hala-b-saudi.firebasestorage.app",
-  messagingSenderId: "939551727593",
-  appId: "1:939551727593:web:20cb4b5b1f39be1fa83578",
-  measurementId: "G-3B770ZRGMK"
+  apiKey: "AIzaSyDJFLFAox-_QQmD6VIP_HhYGj3KMv6Cwtk",
+  authDomain: "west-walk-163cb.firebaseapp.com",
+  projectId: "west-walk-163cb",
+  storageBucket: "west-walk-163cb.firebasestorage.app",
+  messagingSenderId: "561032764465",
+  appId: "1:561032764465:web:44686e680128a3296bc910",
+  measurementId: "G-04RDQKF8V2"
 };
 
 // Initialize Firebase

@@ -53,16 +53,16 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
       let url = imageUrl;
 
       if (imageUpload) {
-        const imageRef = ref(storage, `Venue/images/${imageUpload.name}`);
+        const imageRef = ref(storage, `H-Venue/images/${imageUpload.name}`);
         const snapshot = await uploadBytes(imageRef, imageUpload);
         url = await getDownloadURL(snapshot.ref);
       }
 
       if (editData) {
-        await updateDoc(doc(fireDB, "Venues", editData.id), { venueName, status, img: url });
+        await updateDoc(doc(fireDB, "H-Venues", editData.id), { venueName, status, img: url });
         toast.success("Venue updated successfully!");
       } else {
-        await addDoc(collection(fireDB, "Venues"), {
+        await addDoc(collection(fireDB, "H-Venues"), {
           venueName,
           status,
           img: url,

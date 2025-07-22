@@ -16,7 +16,7 @@ const CountriesDropdown: React.FC<CountriesDropdownProps> = ({ selectedCountry, 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const snapshot = await getDocs(collection(fireDB, "Cities"));
+        const snapshot = await getDocs(collection(fireDB, "H-Cities"));
         const countryList = snapshot.docs.map((doc) => doc.data().countryName) as string[];
   
         // Remove duplicate country names

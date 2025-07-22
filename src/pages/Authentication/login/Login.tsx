@@ -66,7 +66,7 @@ const signin = async () => {
     setLoading(true);
     try {
       // Firestore se Admins collection se data lena
-      const q = query(collection(fireDB, 'Admins'), where('email', '==', email), where('password', '==', password));
+      const q = query(collection(fireDB, 'H-Admins'), where('email', '==', email), where('password', '==', password));
       const querySnapshot = await getDocs(q);
   
       if (querySnapshot.empty) {
