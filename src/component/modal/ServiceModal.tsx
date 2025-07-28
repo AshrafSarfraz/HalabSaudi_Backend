@@ -25,7 +25,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [address, setAddress] = useState("");
-
+  //new feature 
+  const [menuUrl,   setMenuUrl]   = useState(""); 
   const [timings, setTimings] = useState({
     monday: "",
     tuesday: "",
@@ -62,6 +63,9 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setLatitude("");
     setAddress("");
     setDiscount("");
+    
+    // new feature
+    setMenuUrl("");
     setTimings({
       monday: "",
       tuesday: "",
@@ -98,6 +102,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setAddress(editData.address || "");
+     //new feature
+      setMenuUrl(editData.menuUrl || "");
       setTimings(editData.timings || {
         monday: "",
         tuesday: "",
@@ -180,6 +186,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         latitude,
         address,
            // new
+        menuUrl,
         timings,
         startAt,
         endAt,
@@ -237,21 +244,14 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg" />
           <input placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} className="border p-3 rounded-lg" />
           <input placeholder="Latitude" value={latitude} onChange={e => setLatitude(e.target.value)} className="border p-3 rounded-lg" />
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 mt-3">
           <input placeholder="Longitude" value={longitude} onChange={e => setLongitude(e.target.value)} className="border p-3 rounded-lg" />
           <input value={pin} readOnly className="border p-3 rounded-lg" placeholder="Generate Pin" />
           <button onClick={generatePin} className="bg-blue-600 text-white py-3 rounded-lg text-sm">Generate</button>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 mt-3">
+          <input placeholder="Menu URL (optional)" value={menuUrl} onChange={(e) => setMenuUrl(e.target.value)} className="border p-3 rounded-lg" />
           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
           <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 mt-3">
+        
           <select value={isBestSeller} onChange={e => setIsBestSeller(e.target.value)} className="border p-3 rounded-lg text-sm">
             <option value="">Is Best Seller</option>
             <option value="Yes">Yes</option>
@@ -267,7 +267,13 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
+        
         </div>
+
+  
+        
+     
+
 
         {isVenue === "Yes" && <div className="mt-3"><VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /></div>}
 
