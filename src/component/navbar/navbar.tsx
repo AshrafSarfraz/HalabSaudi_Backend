@@ -60,7 +60,7 @@ export const Navbar: React.FC = () => {
                   <Link to={'/offers'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Cities</Link>
-                   <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
+                 <Link to={'/translation'} className="text-sm font-medium text-gray-900 hover:bg-gray-700 py-1 px-3  hover:text-white rounded mt-2">Translation</Link>
                    <button 
   onClick={handleLogout}  
   className="text-sm font-medium text-gray-900 bg-gray-200 py-2 px-4 hover:bg-gray-700 hover:text-white rounded mt-2 lg:hidden"
@@ -106,7 +106,9 @@ export const Navbar: React.FC = () => {
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
-                  <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link>
+                  <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Parent Accounts</Link>
+                
+                  {/* <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link> */}
                   <button onClick={handleLogout}   className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline" >
                     Logout
                    </button> 
