@@ -8,6 +8,8 @@ interface VenusEntry {
   id: string;
   img: string;
   venueName: string;
+  venueNameAr: string;
+  
   status: "Active" | "Inactive";
 }
 
@@ -94,6 +96,7 @@ const Venus: React.FC = () => {
                 <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
                   <th className="border p-3 text-center">Logo</th>
                   <th className="border p-3 text-left">Venue Name</th>
+                  <th className="border p-3 text-left">Venue Name (Ar)</th>
                   <th className="border p-3 text-center">Status</th>
                   <th className="border p-3 text-center">Actions</th>
                 </tr>
@@ -110,6 +113,7 @@ const Venus: React.FC = () => {
                         />
                       </td>
                       <td className="border p-3 text-gray-800">{venue.venueName}</td>
+                      <td className="border p-3 text-gray-800">{venue.venueNameAr}</td>
                       <td className="border p-3 text-center">
                         <span
                           className={`px-3 py-1 rounded text-white text-sm ${

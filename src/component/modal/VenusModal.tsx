@@ -11,6 +11,7 @@ interface VenusModalProps {
   editData?: {
     id: string;
     venueName: string;
+    venueNameAr:string;
     status: string;
     img: string;
   } | null;
@@ -18,6 +19,7 @@ interface VenusModalProps {
 
 const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData }) => {
   const [venueName, setVenueName] = useState("");
+  const [venueNameAr, setVenueNameAr] = useState("");
   const [status, setStatus] = useState("Active");
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,10 +28,12 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
   useEffect(() => {
     if (editData) {
       setVenueName(editData.venueName);
+      setVenueNameAr(editData.venueNameAr);
       setStatus(editData.status);
       setImageUrl(editData.img);
     } else {
       setVenueName("");
+      setVenueNameAr("");
       setStatus("Active");
       setImageUrl("");
     }
@@ -59,11 +63,12 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
       }
 
       if (editData) {
-        await updateDoc(doc(fireDB, "H-Venues", editData.id), { venueName, status, img: url });
+        await updateDoc(doc(fireDB, "H-Venues", editData.id), { venueName, venueNameAr, status, img: url });
         toast.success("Venue updated successfully!");
       } else {
         await addDoc(collection(fireDB, "H-Venues"), {
           venueName,
+          venueNameAr,
           status,
           img: url,
           time: Timestamp.now(),
@@ -95,6 +100,13 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
             onChange={(e) => setVenueName(e.target.value)}
             className="border p-3 w-full rounded-lg mb-3"
             placeholder="Venue Name"
+          />
+            <input
+            type="text"
+            value={venueNameAr}
+            onChange={(e) => setVenueNameAr(e.target.value)}
+            className="border p-3 w-full rounded-lg mb-3"
+            placeholder="Venue Name (Arabic)"
           />
 
           {imageUrl && (
