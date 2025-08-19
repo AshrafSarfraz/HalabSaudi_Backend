@@ -12,7 +12,8 @@ interface VenusModalProps {
     id: string;
     venueName: string;
     venueNameAr:string;
-    status: string;
+    city: string;
+    country: string;
     img: string;
   } | null;
 }
@@ -20,7 +21,8 @@ interface VenusModalProps {
 const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData }) => {
   const [venueName, setVenueName] = useState("");
   const [venueNameAr, setVenueNameAr] = useState("");
-  const [status, setStatus] = useState("Active");
+  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("");
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -29,12 +31,14 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
     if (editData) {
       setVenueName(editData.venueName);
       setVenueNameAr(editData.venueNameAr);
-      setStatus(editData.status);
+      setCity(editData.city);
+      setCountry(editData.country);
       setImageUrl(editData.img);
     } else {
       setVenueName("");
       setVenueNameAr("");
-      setStatus("Active");
+      setCity("");
+      setCountry("");
       setImageUrl("");
     }
   }, [editData]);
@@ -47,7 +51,7 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
   };
 
   const saveVenue = async () => {
-    if (!venueName || !status || (!imageUpload && !editData)) {
+    if (!venueName || !city || !country || (!imageUpload && !editData)) {
       return toast.error("All fields are required");
     }
 
@@ -63,13 +67,14 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
       }
 
       if (editData) {
-        await updateDoc(doc(fireDB, "H-Venues", editData.id), { venueName, venueNameAr, status, img: url });
+        await updateDoc(doc(fireDB, "H-Venues", editData.id), { venueName, venueNameAr, city,country, img: url });
         toast.success("Venue updated successfully!");
       } else {
         await addDoc(collection(fireDB, "H-Venues"), {
           venueName,
           venueNameAr,
-          status,
+          city,
+          country,
           img: url,
           time: Timestamp.now(),
         });
@@ -108,7 +113,21 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
             className="border p-3 w-full rounded-lg mb-3"
             placeholder="Venue Name (Arabic)"
           />
+           <input
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="border p-3 w-full rounded-lg mb-3"
+            placeholder="City"
+          />
 
+           <input
+            type="text"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            className="border p-3 w-full rounded-lg mb-3"
+            placeholder="Country"
+          />
           {imageUrl && (
             <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mb-3 rounded" />
           )}
@@ -119,14 +138,7 @@ const AddVenusModal: React.FC<VenusModalProps> = ({ isOpen, onClose, editData })
             className="border p-3 w-full rounded-lg mb-3"
           />
 
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="border p-3 w-full rounded-lg mb-3"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+         
 
           <div className="flex justify-end space-x-4">
             <button onClick={onClose} className="px-5 py-2 bg-gray-300 rounded-lg">

@@ -9,6 +9,8 @@ interface VenusEntry {
   img: string;
   venueName: string;
   venueNameAr: string;
+  city:string;
+  country:string;
   
   status: "Active" | "Inactive";
 }
@@ -95,9 +97,10 @@ const Venus: React.FC = () => {
               <thead>
                 <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
                   <th className="border p-3 text-center">Logo</th>
-                  <th className="border p-3 text-left">Venue Name</th>
-                  <th className="border p-3 text-left">Venue Name (Ar)</th>
-                  <th className="border p-3 text-center">Status</th>
+                  <th className="border p-3 text-center">Venue Name</th>
+                  <th className="border p-3 text-center">Venue Name (Ar)</th>
+                  <th className="border p-3 text-center">City</th>
+                  <th className="border p-3 text-center">Country</th>
                   <th className="border p-3 text-center">Actions</th>
                 </tr>
               </thead>
@@ -112,17 +115,19 @@ const Venus: React.FC = () => {
                           className="w-12 h-12 object-cover rounded-full"
                         />
                       </td>
-                      <td className="border p-3 text-gray-800">{venue.venueName}</td>
-                      <td className="border p-3 text-gray-800">{venue.venueNameAr}</td>
-                      <td className="border p-3 text-center">
+                      <td className="border p-3 text-gray-800 text-center ">{venue.venueName}</td>
+                      <td className="border p-3 text-gray-800 text-center ">{venue.venueNameAr}</td>
+                      <td className="border p-3 text-gray-800 text-center ">{venue.city}</td>
+                      <td className="border p-3 text-gray-800 text-center ">{venue.country}</td>
+                      {/* <td className="border p-3 text-center">
                         <span
                           className={`px-3 py-1 rounded text-white text-sm ${
                             venue.status === "Active" ? "bg-green-500" : "bg-red-500"
                           }`}
                         >
-                          {venue.status}
+                          {venue.city}
                         </span>
-                      </td>
+                      </td> */}
                       <td className="border p-3 text-center space-x-2">
                         <button
                           onClick={() => openModal(venue)}
