@@ -13,6 +13,8 @@ import AccountManagementScreen from "./pages/accounts/Account";
 import Login from "./pages/Authentication/login/Login";
 import NoPage from "./pages/NoPage";
 import AddBrandScreen from "./pages/Mobile_Screen/AddBrandsData";
+import Group_Account from "./pages/Group Account/GroupAccount";
+import BrandList from "./pages/Group Account/BrandList";
 
 interface ProtectedRoutesProps {
   children: ReactNode;
@@ -31,7 +33,9 @@ function App() {
           <Route path="/offers" element={<ProtectedRoutes><Offers/></ProtectedRoutes>} />
           <Route path="/accounts" element={<ProtectedRoutes><AccountManagementScreen/></ProtectedRoutes>} />
           <Route path="/cities" element={<ProtectedRoutes><CityManagementScreen/></ProtectedRoutes>} />
-          <Route path="/translation" element={<ProtectedRoutes><Translation/></ProtectedRoutes>} />
+          {/* <Route path="/translation" element={<ProtectedRoutes><Translation/></ProtectedRoutes>} /> */}
+          <Route path="/group_account" element={<ProtectedRoutes><Group_Account/></ProtectedRoutes>} />
+          <Route path="/brands/:id" element={<ProtectedRoutes><BrandList/></ProtectedRoutes>} />
           <Route path="/AddBrand/12652154214641264521465124xxp1" element={<AddBrandScreen/>} />
           <Route path="/*" element={<NoPage />} />
         </Routes>

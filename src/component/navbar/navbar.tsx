@@ -106,7 +106,7 @@ export const Navbar: React.FC = () => {
                   <Link to={'/offers'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Offers</Link>
                   <Link to={'/accounts'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Accounts</Link>
                   <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Cities</Link>
-                  <Link to={'/cities'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Parent Accounts</Link>
+                  <Link to={'/group_account'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Parent Accounts</Link>
                 
                   {/* <Link to={'/translation'} className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline">Translation</Link> */}
                   <button onClick={handleLogout}   className="text-sm font-medium text-gray-100 hover:text-blue-500 hover:underline" >
