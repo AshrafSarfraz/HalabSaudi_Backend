@@ -11,13 +11,13 @@ interface VenusEntry {
   nameArabic: string;
   descriptionEng: string;
   descriptionArabic: string;
-  PhoneNumber:string;
-  address:string;
+  PhoneNumber: string;
+  address: string;
   longitude: string;
   latitude: string;
   discount: string;
-  Time_sat_to_thrusday:string;
-  Time_Fri_to_Sat:string;
+  Time_sat_to_thrusday: string;
+  Time_Fri_to_Sat: string;
   startAt: string;
   endAt: string;
   pin: string;
@@ -28,10 +28,15 @@ interface VenusEntry {
   selectedCity: any | null;
   selectedCountry: any | null;
   status: string;
-  img: string;
-  pdfUrl:string;
-  imageUrl: string; // added image URL for the uploaded image
+
+  // Media
+  img: string;              // main logo image
+  pdfUrl: string;           // uploaded PDF
+  imageUrl: string;         // preview or temporary image (local)
+
+  multiImageUrls: string[]; // ✅ new field for multiple uploaded images
 }
+
 
 const FlatOffer: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

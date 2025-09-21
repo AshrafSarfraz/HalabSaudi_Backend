@@ -1,11 +1,9 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { collection, onSnapshot, query, where, orderBy, doc, deleteDoc } from "firebase/firestore";
+import { collection, onSnapshot, query, where, doc, deleteDoc } from "firebase/firestore";
 import { fireDB } from "../../firebase/FirebaseConfig";
 import Layout from "../../component/layout/Layout";
-import ServicesModal from "../../component/modal/ServiceModal";
 import { toast } from "react-toastify";
-import ServicesModal2 from "../../component/modal/GroupAccountBrand";
 import BrandListModal from "../../component/modal/GroupAccountBrand";
 import ViewBrandModal from "../../component/modal/GroupAcc_ViewBrand";
 

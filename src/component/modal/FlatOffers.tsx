@@ -12,7 +12,7 @@ import CitiesDropdown from "../dropdown/CityDropDown";
 interface ServicesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editData?:any;
+  editData?: any;
 }
 
 const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
@@ -25,7 +25,6 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
-// new data
   const [timings, setTimings] = useState({
     monday: "",
     tuesday: "",
@@ -35,7 +34,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     saturday: "",
     sunday: "",
   });
-  
+
   const [startAt, setStartAt] = useState("");
   const [endAt, setEndAt] = useState("");
   const [pin, setPin] = useState("");
@@ -43,17 +42,18 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [isVenue, setIsVenue] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedCity, setSelectedCity] = useState("")
+  const [selectedCity, setSelectedCity] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(" ");
   const [status, setStatus] = useState("");
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState(editData?.pdfUrl || ""); // Set existing PDF URL if editing
-  
+  const [pdfUrl, setPdfUrl] = useState(editData?.pdfUrl || "");
 
-
+  // 🔹 New multiple images state
+  const [multiImages, setMultiImages] = useState<File[]>([]);
+  const [multiImageUrls, setMultiImageUrls] = useState<string[]>(editData?.multiImageUrls || []);
 
   const resetForm = () => {
     setNameEng("");
@@ -65,7 +65,6 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setLongitude("");
     setLatitude("");
     setDiscount("");
-    // new 
     setTimings({
       monday: "",
       tuesday: "",
@@ -75,7 +74,6 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       saturday: "",
       sunday: "",
     });
-
     setStartAt("");
     setEndAt("");
     setPin("");
@@ -89,9 +87,10 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setImageUrl("");
     setPdfFile(null);
     setPdfUrl("");
+    setMultiImages([]);
+    setMultiImageUrls([]);
   };
 
-  // Populate form fields if editing
   useEffect(() => {
     if (editData) {
       setNameEng(editData.nameEng || "");
@@ -103,8 +102,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setDiscount(editData.discount || "");
-       //new
-       setTimings(editData.timings || {
+      setTimings(editData.timings || {
         monday: "",
         tuesday: "",
         wednesday: "",
@@ -113,9 +111,6 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
         saturday: "",
         sunday: "",
       });
-
-
-
       setStartAt(editData.startAt || "");
       setEndAt(editData.endAt || "");
       setPin(editData.pin || "");
@@ -127,44 +122,73 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setSelectedCountry(editData.selectedCountry || "");
       setStatus(editData.status || "");
       setImageUrl(editData.img || "");
-      setPdfUrl(editData.pdfUrl || "")
+      setPdfUrl(editData.pdfUrl || "");
+      setMultiImageUrls(editData.multiImageUrls || []);
     } else {
-      resetForm()
+      resetForm();
     }
   }, [editData]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageUpload(e.target.files[0]);
-      setImageUrl(URL.createObjectURL(e.target.files[0])); // Preview Image
+      setImageUrl(URL.createObjectURL(e.target.files[0]));
     }
   };
-const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setPdfFile(e.target.files[0]);
     }
   };
+
+  // 🔹 Handle multiple images
+  const handleMultiImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setMultiImages((prev) => [...prev, ...filesArray]);
+      const urls = filesArray.map((file) => URL.createObjectURL(file));
+      setMultiImageUrls((prev) => [...prev, ...urls]);
+    }
+  };
+
+  const removeMultiImage = (index: number) => {
+    setMultiImages((prev) => prev.filter((_, i) => i !== index));
+    setMultiImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const saveVenue = async () => {
-    if (!nameEng || !descriptionEng || !longitude || !latitude || !selectedCategory || !selectedCity ||  (!imageUpload && !editData)) {
+    if (!nameEng || !descriptionEng || !longitude || !latitude || !selectedCategory || !selectedCity || (!imageUpload && !editData)) {
       return toast.error("All fields are required!");
     }
 
     setLoading(true);
     try {
       let url = imageUrl;
-      let pdfUrl = editData?.pdfUrl || "";
+      let finalPdfUrl = editData?.pdfUrl || "";
+      let uploadedMultiImageUrls = [...multiImageUrls];
 
       if (imageUpload) {
         const imageRef = ref(storage, `H-FlatOffer/images/${imageUpload.name}`);
         const snapshot = await uploadBytes(imageRef, imageUpload);
         url = await getDownloadURL(snapshot.ref);
       }
- // Upload PDF if new PDF is selected
-            if (pdfFile) {
-              const pdfRef = ref(storage, `H-Brands/pdfs/${pdfFile.name}`);
-              const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
-              pdfUrl = await getDownloadURL(pdfSnapshot.ref);
-            }
+
+      if (pdfFile) {
+        const pdfRef = ref(storage, `H-FlatOffer/pdfs/${pdfFile.name}`);
+        const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
+        finalPdfUrl = await getDownloadURL(pdfSnapshot.ref);
+      }
+
+      if (multiImages.length > 0) {
+        uploadedMultiImageUrls = [];
+        for (const file of multiImages) {
+          const imgRef = ref(storage, `H-FlatOffer/multiImages/${file.name}`);
+          const snapshot = await uploadBytes(imgRef, file);
+          const url = await getDownloadURL(snapshot.ref);
+          uploadedMultiImageUrls.push(url);
+        }
+      }
 
       const venueData = {
         nameEng,
@@ -176,9 +200,7 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         longitude,
         latitude,
         discount,
-         // new
-         timings,
-
+        timings,
         startAt,
         endAt,
         selectedCategory,
@@ -190,19 +212,19 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         selectedVenue,
         status,
         img: url,
-        pdfUrl, // Store the PDF URL
+        pdfUrl: finalPdfUrl,
+        multiImageUrls: uploadedMultiImageUrls,
         time: Timestamp.now(),
       };
 
       if (editData) {
-        // Update existing data
         await updateDoc(doc(fireDB, "H-FlatOffers", editData.id), venueData);
         toast.success("Flat Offer updated successfully!");
       } else {
-        // Add new data
         await addDoc(collection(fireDB, "H-FlatOffers"), venueData);
         toast.success("Flat Offer added successfully!");
       }
+
       resetForm();
       onClose();
     } catch (error) {
@@ -212,11 +234,13 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setLoading(false);
     }
   };
+
   const handleTimingChange = (day: string, value: string) => {
     setTimings((prev) => ({ ...prev, [day]: value }));
   };
+
   const generatePin = () => {
-    const randomPin = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit PIN
+    const randomPin = Math.floor(100000 + Math.random() * 900000);
     setPin(randomPin.toString());
   };
 
@@ -331,6 +355,27 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           <input  type="file" id="image-upload"onChange={handleImageChange}className="hidden"/>
           </div>
           </div>
+
+
+          <div className="mt-6">
+            <label htmlFor="multi-image-upload" className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg inline-block">
+              Choose Multiple Images
+            </label>
+            <input type="file" id="multi-image-upload" className="hidden" multiple onChange={handleMultiImageChange} />
+            <div className="flex flex-wrap mt-3 gap-2">
+              {multiImageUrls.map((url, index) => (
+                <div key={index} className="relative">
+                  <img src={url} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-lg" />
+                  <button
+                    onClick={() => removeMultiImage(index)}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
           
            <div className="flex justify-end space-x-4 mt-5">
             <button onClick={()=>{resetForm(); onClose();}} className="px-5 py-2 bg-gray-300 rounded-lg">
@@ -347,4 +392,358 @@ const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 export default FlatOfferModal;
+
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { toast } from "react-toastify";
+// import { fireDB, storage } from "../../firebase/FirebaseConfig";
+// import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
+// import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+// import Loader from "../loader/Loader";
+// import VenuDropdown from "../dropdown/VenusDropDown";
+// import CategoriesDropdown from "../dropdown/CategoriesDropDown";
+// import CountriesDropdown from "../dropdown/CountryDropDown";
+// import CitiesDropdown from "../dropdown/CityDropDown";
+
+// interface ServicesModalProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   editData?:any;
+// }
+
+// const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
+//   const [nameEng, setNameEng] = useState("");
+//   const [nameArabic, setNameArabic] = useState("");
+//   const [descriptionEng, setDescriptionEng] = useState("");
+//   const [descriptionArabic, setDescriptionArabic] = useState("");
+//   const [PhoneNumber, setPhoneNumber] = useState("");
+//   const [address, setAddress] = useState("");
+//   const [longitude, setLongitude] = useState("");
+//   const [latitude, setLatitude] = useState("");
+//   const [discount, setDiscount] = useState("");
+// // new data
+//   const [timings, setTimings] = useState({
+//     monday: "",
+//     tuesday: "",
+//     wednesday: "",
+//     thursday: "",
+//     friday: "",
+//     saturday: "",
+//     sunday: "",
+//   });
+  
+//   const [startAt, setStartAt] = useState("");
+//   const [endAt, setEndAt] = useState("");
+//   const [pin, setPin] = useState("");
+//   const [isBestSeller, setIsBestSeller] = useState("");
+//   const [isVenue, setIsVenue] = useState("");
+//   const [selectedVenue, setSelectedVenue] = useState("");
+//   const [selectedCategory, setSelectedCategory] = useState("");
+//   const [selectedCity, setSelectedCity] = useState("")
+//   const [selectedCountry, setSelectedCountry] = useState(" ");
+//   const [status, setStatus] = useState("");
+//   const [imageUpload, setImageUpload] = useState<File | null>(null);
+//   const [loading, setLoading] = useState(false);
+//   const [imageUrl, setImageUrl] = useState("");
+//   const [pdfFile, setPdfFile] = useState<File | null>(null);
+//   const [pdfUrl, setPdfUrl] = useState(editData?.pdfUrl || ""); // Set existing PDF URL if editing
+  
+
+
+
+//   const resetForm = () => {
+//     setNameEng("");
+//     setNameArabic("");
+//     setDescriptionEng("");
+//     setDescriptionArabic("");
+//     setPhoneNumber("");
+//     setAddress("");
+//     setLongitude("");
+//     setLatitude("");
+//     setDiscount("");
+//     // new 
+//     setTimings({
+//       monday: "",
+//       tuesday: "",
+//       wednesday: "",
+//       thursday: "",
+//       friday: "",
+//       saturday: "",
+//       sunday: "",
+//     });
+
+//     setStartAt("");
+//     setEndAt("");
+//     setPin("");
+//     setIsBestSeller("");
+//     setIsVenue("");
+//     setSelectedVenue("");
+//     setSelectedCategory("");
+//     setSelectedCity("");
+//     setSelectedCountry("");
+//     setStatus("");
+//     setImageUrl("");
+//     setPdfFile(null);
+//     setPdfUrl("");
+//   };
+
+//   // Populate form fields if editing
+//   useEffect(() => {
+//     if (editData) {
+//       setNameEng(editData.nameEng || "");
+//       setNameArabic(editData.nameArabic || "");
+//       setDescriptionEng(editData.descriptionEng || "");
+//       setDescriptionArabic(editData.descriptionArabic || "");
+//       setPhoneNumber(editData.PhoneNumber || "");
+//       setAddress(editData.address || "");
+//       setLongitude(editData.longitude || "");
+//       setLatitude(editData.latitude || "");
+//       setDiscount(editData.discount || "");
+//        //new
+//        setTimings(editData.timings || {
+//         monday: "",
+//         tuesday: "",
+//         wednesday: "",
+//         thursday: "",
+//         friday: "",
+//         saturday: "",
+//         sunday: "",
+//       });
+
+
+
+//       setStartAt(editData.startAt || "");
+//       setEndAt(editData.endAt || "");
+//       setPin(editData.pin || "");
+//       setIsBestSeller(editData.isBestSeller || "");
+//       setIsVenue(editData.isVenue || "");
+//       setSelectedVenue(editData.selectedVenue || "");
+//       setSelectedCategory(editData.selectedCategory || "");
+//       setSelectedCity(editData.selectedCity || "");
+//       setSelectedCountry(editData.selectedCountry || "");
+//       setStatus(editData.status || "");
+//       setImageUrl(editData.img || "");
+//       setPdfUrl(editData.pdfUrl || "")
+//     } else {
+//       resetForm()
+//     }
+//   }, [editData]);
+
+//   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0]) {
+//       setImageUpload(e.target.files[0]);
+//       setImageUrl(URL.createObjectURL(e.target.files[0])); // Preview Image
+//     }
+//   };
+// const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0]) {
+//       setPdfFile(e.target.files[0]);
+//     }
+//   };
+//   const saveVenue = async () => {
+//     if (!nameEng || !descriptionEng || !longitude || !latitude || !selectedCategory || !selectedCity ||  (!imageUpload && !editData)) {
+//       return toast.error("All fields are required!");
+//     }
+
+//     setLoading(true);
+//     try {
+//       let url = imageUrl;
+//       let pdfUrl = editData?.pdfUrl || "";
+
+//       if (imageUpload) {
+//         const imageRef = ref(storage, `H-FlatOffer/images/${imageUpload.name}`);
+//         const snapshot = await uploadBytes(imageRef, imageUpload);
+//         url = await getDownloadURL(snapshot.ref);
+//       }
+//  // Upload PDF if new PDF is selected
+//             if (pdfFile) {
+//               const pdfRef = ref(storage, `H-Brands/pdfs/${pdfFile.name}`);
+//               const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
+//               pdfUrl = await getDownloadURL(pdfSnapshot.ref);
+//             }
+
+//       const venueData = {
+//         nameEng,
+//         nameArabic,
+//         descriptionEng,
+//         descriptionArabic,
+//         PhoneNumber,
+//         address,
+//         longitude,
+//         latitude,
+//         discount,
+//          // new
+//          timings,
+
+//         startAt,
+//         endAt,
+//         selectedCategory,
+//         pin,
+//         isBestSeller,
+//         isVenue,
+//         selectedCity,
+//         selectedCountry,
+//         selectedVenue,
+//         status,
+//         img: url,
+//         pdfUrl, // Store the PDF URL
+//         time: Timestamp.now(),
+//       };
+
+//       if (editData) {
+//         // Update existing data
+//         await updateDoc(doc(fireDB, "H-FlatOffers", editData.id), venueData);
+//         toast.success("Flat Offer updated successfully!");
+//       } else {
+//         // Add new data
+//         await addDoc(collection(fireDB, "H-FlatOffers"), venueData);
+//         toast.success("Flat Offer added successfully!");
+//       }
+//       resetForm();
+//       onClose();
+//     } catch (error) {
+//       console.error(error);
+//       toast.error("Error saving Offer");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+//   const handleTimingChange = (day: string, value: string) => {
+//     setTimings((prev) => ({ ...prev, [day]: value }));
+//   };
+//   const generatePin = () => {
+//     const randomPin = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit PIN
+//     setPin(randomPin.toString());
+//   };
+
+//   return (
+//     isOpen && (
+//       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+//         {loading && <Loader />}
+//         <div className="bg-white p-6 rounded-lg w-[90%] max-w-5xl h-[80vh] overflow-y-auto">
+//           <h2 className="text-2xl font-semibold mb-5 text-gray-800">
+//             {editData ? "Edit Offer" : "Add New Offer"}
+//           </h2>
+
+//           <div className="grid grid-cols-3 gap-4">
+//                   <input type="text" value={nameEng} onChange={(e) => setNameEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Name in English" />
+//                   <input type="text" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Name in Arabic" />
+//                   <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Discount" />
+              
+//                 </div>
+
+//           <div className="grid grid-cols-2 gap-4 mt-3">
+//             <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In English"></textarea>
+//             <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In Arabic"></textarea>
+//           </div>
+         
+//          <div className="grid grid-cols-3 gap-4 mt-3">
+//            <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" />      
+//            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
+//           <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
+                
+//         </div>
+
+
+
+//           <div className="grid grid-cols-3 gap-4 mt-3">
+//                 <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
+//                 <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
+//                   <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
+
+//                  </div>
+
+      
+//           <div className="grid grid-cols-3 gap-4 mt-3">
+//           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+//           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
+//           <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
+//           </div>
+//           <div className="grid grid-cols-3 gap-4 mt-3">
+
+//           <select value={isBestSeller}   onChange={(e) =>setIsBestSeller(e.target.value)}   className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+//                  <option  value="">Is Best Seller</option>
+//                  <option value="Yes">Yes</option>
+//                  <option value="No">No</option>
+//           </select>
+//           <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+//                  <option value="">Is Status </option>
+//                  <option value="Yes">Yes</option>
+//                  <option value="No">No</option>
+//           </select>
+//           <select value={isVenue} onChange={(e) => setIsVenue(e.target.value)} className="border p-3 pr-8 w-full rounded-lg text-[13px] " >
+//                  <option value="">Is Venue</option>
+//                  <option value="Yes">Yes</option>
+//                  <option value="No">No</option>
+//           </select>
+//           </div>
+//          <div className="mt-3 ">
+//                   {isVenue === "Yes" && ( <VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /> )}
+//          </div>
+ 
+//          <div className="grid grid-cols-2 gap-4 mt-3">
+//          <div>
+//          <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Starting Date:</label>
+//          <input  type="date" value={startAt}  onChange={(e) => setStartAt(e.target.value)}  className="border p-2 rounded-lg w-full  text-[13px]" />
+//         </div>
+//          <div>
+//          <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Ending Date:</label>
+//        <input  type="date"  value={endAt}  onChange={(e) => setEndAt(e.target.value)}  className="border p-2 rounded-lg w-full text-[13px] "  />
+//         </div>
+//        </div>
+//          {/* Timings input */}
+//          <div className="grid grid-cols-3 gap-4 mt-3 mb-2">
+//           {Object.entries(timings).map(([day, value]) => (
+//             <div key={day}>
+//               <label className="text-sm capitalize">{day}</label>
+//               <input
+//                 placeholder="e.g. 10:00 AM - 9:00 PM"
+//                 value={value}
+//                 onChange={(e) => handleTimingChange(day, e.target.value)}
+//                 className="border p-2 rounded-lg w-full text-sm mt-1"
+//               />
+//             </div>
+//           ))}
+//         </div>
+
+
+//        <div className="  mt-10  ">
+//              <div className="  mt-5  ">
+//             {/* Custom Label for PDF Input */}
+//             {(pdfFile || pdfUrl) && (  <div className="mb-5 mt-5 bg-gray-100 rounded-lg w-[100%] p-3">
+//               <span>  {pdfFile && 'name' in pdfFile ? pdfFile.name: typeof pdfUrl === 'string'? decodeURIComponent(pdfUrl.split('/').pop()?.split('?')[0] || '').split('/').pop(): 'Unknown File'}
+//               </span>
+//             </div>)}
+//             <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-11 py-3 rounded-lg ">
+//               Choose Menu PDF
+//             </label> 
+//             <input type="file" id="pdf-upload"  onChange={handlePdfChange} className="hidden"   />
+//             </div>
+//            {imageUrl && ( <img src={imageUrl} alt="Venue" className="w-24 h-24 object-cover mt-6  rounded-lg" />)}
+//            <div className="mt-8">
+//           <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-10 py-3 rounded-lg mt-3">
+//            Choose Logo Image
+//           </label>
+//           <input  type="file" id="image-upload"onChange={handleImageChange}className="hidden"/>
+//           </div>
+//           </div>
+          
+//            <div className="flex justify-end space-x-4 mt-5">
+//             <button onClick={()=>{resetForm(); onClose();}} className="px-5 py-2 bg-gray-300 rounded-lg">
+//               Cancel
+//             </button>
+//             <button onClick={saveVenue} className="px-5 py-2 bg-blue-600 text-white rounded-lg" disabled={loading}>
+//               {loading ? "Saving..." : editData ? "Update Offer" : "Save Offer"}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     )
+//   );
+// };
+
+// export default FlatOfferModal;
 

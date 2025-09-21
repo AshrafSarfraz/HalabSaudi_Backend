@@ -4,7 +4,6 @@ import { ToastContainer} from 'react-toastify';
 import 'react-toastify/ReactToastify.css'
 import Home from "./pages/home/Home";
 import Services from "./pages/services/Services";
-import Translation from "./pages/translation/Translation";
 import Offers from "./pages/offers/Offer";
 import { User } from "./pages/user/User";
 import Venus from "./pages/venus/venus";
