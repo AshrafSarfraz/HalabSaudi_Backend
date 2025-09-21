@@ -138,6 +138,7 @@ const Services: React.FC = () => {
                       </td>
                       <td className="border p-3 text-gray-800 text-center">{venue.nameEng}</td>
                       <td className="border p-3 text-gray-800 text-center">{venue.selectedVenue}</td>
+    
                       <td className="border p-3 text-gray-800 text-center ">{venue.discount}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.selectedCity}</td>
                       <td className={`border p-3 text-gray-800 text-center ${venue.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{venue.status}</td>
