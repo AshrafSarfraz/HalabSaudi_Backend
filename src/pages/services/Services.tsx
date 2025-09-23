@@ -15,6 +15,7 @@ interface VenusEntry {
   latitude: string;
   address: string;
   discount: string;
+  discountArabic: string;
 
   // New timing fields
   timings: {

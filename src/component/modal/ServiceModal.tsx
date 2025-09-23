@@ -19,6 +19,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [nameEng, setNameEng] = useState("");
   const [nameArabic, setNameArabic] = useState("");
   const [discount, setDiscount] = useState("");
+  const [discountArabic, setDiscountArabic] = useState("");
   const [descriptionEng, setDescriptionEng] = useState("");
   const [descriptionArabic, setDescriptionArabic] = useState("");
   const [PhoneNumber, setPhoneNumber] = useState("");
@@ -50,12 +51,12 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
 
   const resetForm = () => {
     setNameEng(""); setNameArabic(""); setDescriptionEng(""); setDescriptionArabic(""); setPhoneNumber("");
-    setLongitude(""); setLatitude(""); setAddress(""); setDiscount("");
+    setLongitude(""); setLatitude(""); setAddress(""); setDiscount(""); setDescriptionArabic(""),
     setMenuUrl(""); setTimings({ monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
     setStartAt(""); setEndAt(""); setPin(""); setIsBestSeller(""); setIsVenue("");
     setSelectedVenue(""); setSelectedCategory(""); setSelectedCity(""); setSelectedCountry("");
     setStatus("No"); setImageUpload(null); setImageUrl(""); setPdfFile(null); setPdfUrl("");
-    setMultiImages([]); setMultiImageUrls([]);
+    setMultiImages([]); setMultiImageUrls([]); 
   };
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setNameEng(editData.nameEng || "");
       setNameArabic(editData.nameArabic || "");
       setDiscount(editData.discount || "");
+      setDiscountArabic(editData.discountArabic || "")
       setDescriptionEng(editData.descriptionEng || "");
       setDescriptionArabic(editData.descriptionArabic || "");
       setPhoneNumber(editData.PhoneNumber || "");
@@ -161,7 +163,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       }
 
       const venueData = {
-        nameEng, nameArabic, discount, descriptionEng, descriptionArabic,
+        nameEng, nameArabic, discount,discountArabic, descriptionEng, descriptionArabic,
         PhoneNumber, longitude, latitude, address,
         menuUrl, timings, startAt, endAt, selectedCategory, pin,
         isBestSeller, isVenue, selectedCity, selectedCountry, selectedVenue,
@@ -201,19 +203,19 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           <input placeholder="Discount" value={discount} onChange={e => setDiscount(e.target.value)} className="border p-3 rounded-lg" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-3">
-          <textarea placeholder="Description In English" value={descriptionEng} onChange={e => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg" />
-          <textarea placeholder="Description In Arabic" value={descriptionArabic} onChange={e => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg" />
-        </div>
+      
 
         <div className="grid grid-cols-3 gap-4 mt-3">
-          <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg" />
+        <input placeholder="Discount Arabic" value={discountArabic} onChange={e => setDiscountArabic(e.target.value)} className="border p-3 rounded-lg" />
+        
+        <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg" />
           <input placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} className="border p-3 rounded-lg" />
+          <input placeholder="Menu URL (optional)" value={menuUrl} onChange={(e) => setMenuUrl(e.target.value)} className="border p-3 rounded-lg" /> 
           <input placeholder="Latitude" value={latitude} onChange={e => setLatitude(e.target.value)} className="border p-3 rounded-lg" />
           <input placeholder="Longitude" value={longitude} onChange={e => setLongitude(e.target.value)} className="border p-3 rounded-lg" />
           <input value={pin} readOnly className="border p-3 rounded-lg" placeholder="Generate Pin" />
           <button onClick={generatePin} className="bg-blue-600 text-white py-3 rounded-lg text-sm">Generate</button>
-          <input placeholder="Menu URL (optional)" value={menuUrl} onChange={(e) => setMenuUrl(e.target.value)} className="border p-3 rounded-lg" />
+     
           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
           <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
@@ -235,6 +237,10 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
           </select>
         </div>
 
+        <div className="grid grid-cols-2 gap-4 mt-3">
+          <textarea placeholder="Description In English" value={descriptionEng} onChange={e => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg" />
+          <textarea placeholder="Description In Arabic" value={descriptionArabic} onChange={e => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg" />
+        </div>
         {isVenue === "Yes" && <div className="mt-3"><VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /></div>}
 
         <div className="grid grid-cols-2 gap-4 mt-3">
@@ -291,7 +297,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
             {multiImageUrls.map((url, index) => (
               <div key={index} className="relative">
                 <img src={url} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-lg" />
-                <button onClick={() => removeMultiImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">x</button>
+                <button onClick={() => removeMultiImage(index)} className="absolute top-0 right-0 bg-red-500 text-red rounded-full w-5 h-5 text-xs flex items-center justify-center">x</button>
               </div>
             ))}
           </div>

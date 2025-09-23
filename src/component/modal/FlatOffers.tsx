@@ -25,6 +25,8 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [discount, setDiscount] = useState("");
+  const [discountArabic, setDiscountArabic] = useState("");
+  
   const [timings, setTimings] = useState({
     monday: "",
     tuesday: "",
@@ -65,6 +67,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
     setLongitude("");
     setLatitude("");
     setDiscount("");
+    setDiscountArabic("");
     setTimings({
       monday: "",
       tuesday: "",
@@ -102,6 +105,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
       setLongitude(editData.longitude || "");
       setLatitude(editData.latitude || "");
       setDiscount(editData.discount || "");
+      setDiscountArabic(editData.discountArabic || "")
       setTimings(editData.timings || {
         monday: "",
         tuesday: "",
@@ -200,6 +204,7 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
         longitude,
         latitude,
         discount,
+        discountArabic,
         timings,
         startAt,
         endAt,
@@ -257,29 +262,19 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
                   <input type="text" value={nameEng} onChange={(e) => setNameEng(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Name in English" />
                   <input type="text" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Name in Arabic" />
                   <input type="text" value={discount} onChange={(e) => setDiscount(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Discount" />
-              
+                  <input type="text" value={discountArabic} onChange={(e) => setDiscountArabic(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Discount in Arabic" />
+                  <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" />      
+                  <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
+                  <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />    
+                  <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
+                  <div className="grid grid-cols-2 gap-2">   
+                  <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
+                  <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-2 rounded-lg text-xs">Generate </button>
+                 </div>
+               
                 </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-3">
-            <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In English"></textarea>
-            <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In Arabic"></textarea>
-          </div>
-         
-         <div className="grid grid-cols-3 gap-4 mt-3">
-           <input type="text" value={PhoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="e.g. +971501234567" />      
-           <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px]" placeholder="Address" />
-          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="border p-3 rounded-lg placeholder:text-[13px] " placeholder="Latitude" />
-                
-        </div>
-
-
-
-          <div className="grid grid-cols-3 gap-4 mt-3">
-                <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="border p-3 rounded-lg  placeholder:text-[13px]" placeholder="Longitude" />
-                <input type="text"  value={pin} onChange={(e) => setPin(e.target.value)} className="border p-2 rounded-lg w-[100%] text-center placeholder:text-[13px] " placeholder="Generate Pin" /> 
-                  <button onClick={generatePin} className="bg-blue-500 text-white px-2 py-3 rounded-lg text-xs">Generate </button>
-
-                 </div>
+        
 
       
           <div className="grid grid-cols-3 gap-4 mt-3">
@@ -308,7 +303,11 @@ const FlatOfferModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editDat
          <div className="mt-3 ">
                   {isVenue === "Yes" && ( <VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /> )}
          </div>
- 
+         <div className="grid grid-cols-2 gap-4 mt-3">
+            <textarea value={descriptionEng} onChange={(e) => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In English"></textarea>
+            <textarea value={descriptionArabic} onChange={(e) => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg h-28 placeholder:text-[13px] " placeholder="Description In Arabic"></textarea>
+          </div>
+         
          <div className="grid grid-cols-2 gap-4 mt-3">
          <div>
          <label className="block text-gray-700 text-sm font-bold mb-2 text-[13px] ">Redeem Starting Date:</label>
