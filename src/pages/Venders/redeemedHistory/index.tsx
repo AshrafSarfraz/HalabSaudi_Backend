@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../component/layout/Layout";
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
+import { fireDB } from "../../../firebase/FirebaseConfig";
+import Layout from "../../../component/layout/Layout";
 
-export const User: React.FC = () => {
+
+export const Vender_Redeemed_Histroy: React.FC = () => {
   const [search, setSearch] = useState("");
   const [redeems, setRedeems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ export const User: React.FC = () => {
   const totalPages = Math.ceil(filteredRedeems.length / redeemsPerPage);
 
   return (
-    <Layout>
+
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-semibold mb-6">Redeemed Discounts</h1>
 
@@ -74,7 +75,6 @@ export const User: React.FC = () => {
                     <th className="border p-2">Phone</th>
                     <th className="border p-2">Brand</th>
                     <th className="border p-2">Address</th>
-                    <th className="border p-2">Date</th>
                     <th className="border p-2">Percentage</th>
                     <th className="border p-2">Created At</th>
                   </tr>
@@ -86,7 +86,6 @@ export const User: React.FC = () => {
                       <td className="border p-2">{item.phoneNumber || "N/A"}</td>
                       <td className="border p-2">{item.brand || "N/A"}</td>
                       <td className="border p-2">{item.address || "N/A"}</td>
-                      <td className="border p-2">{item.date || "N/A"}</td>
                       <td className="border p-2">{item.percentage || "N/A"}</td>
                       <td className="border p-2">
                         {item.createdAt?.toDate
@@ -118,6 +117,5 @@ export const User: React.FC = () => {
           </>
         )}
       </div>
-    </Layout>
   );
 };
