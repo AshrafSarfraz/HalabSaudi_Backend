@@ -90,8 +90,7 @@ function VenderLogin() {
 
             <button
               onClick={signin}
-              className="bg-green-700 hover:bg-green-800 w-full text-white font-semibold py-4 rounded-lg transition duration-200 text-xl"
-            >
+              className="bg-green-700 hover:bg-green-800 w-full text-white font-semibold py-4 rounded-lg transition duration-200 text-xl">
               Login
             </button>
           </div>
