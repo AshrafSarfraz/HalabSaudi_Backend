@@ -1,7 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig";
-import ServicesModal from "../../../component/modal/ServiceModal";
 import VenderServicesModal from "../../../component/modal/venderAccount/VenderServiceBrand";
 
 interface VenusEntry {
