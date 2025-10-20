@@ -2,6 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig";
 import ServicesModal from "../../../component/modal/ServiceModal";
+import VenderServicesModal from "../../../component/modal/venderAccount/VenderServiceBrand";
 
 interface VenusEntry {
   id: string;
@@ -53,6 +54,7 @@ const VenderBrands: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState<VenusEntry | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+   const [venderName, setVenderName] = useState<string>(""); 
 
   const openModal = (venue?: VenusEntry) => {
     setEditData(venue || null);
@@ -66,6 +68,13 @@ const VenderBrands: React.FC = () => {
 
   // fetch Data
   useEffect(() => {
+    const raw = localStorage.getItem("currentVender");
+    if (!raw) return;
+  
+    const vendorData = JSON.parse(raw);
+    setVenderName(vendorData.name || ""); // adjust key name as needed
+   
+  
     setLoading(true);
     const q = query(collection(fireDB, "H-Brands"), orderBy("time"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -94,7 +103,12 @@ const VenderBrands: React.FC = () => {
  
   // search Item
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
-  const filteredVenusList = venusList.filter((v) =>
+ 
+    
+
+  const filteredVenusList = venusList
+  .filter((item) => item.nameEng?.toLowerCase() === venderName.toLowerCase())
+  .filter((v) =>
     v.nameEng.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -115,7 +129,7 @@ const VenderBrands: React.FC = () => {
             onClick={() => openModal()}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md transition duration-200 shadow-md"
           >
-            + Add Brands
+            + Add Branch
           </button>
         </div>
 
@@ -152,7 +166,7 @@ const VenderBrands: React.FC = () => {
                         />
                       </td>
                       <td className="border p-3 text-gray-800 text-center">{venue.nameEng}</td>
-                      <td className="border p-3 text-gray-800 text-center">{venue.selectedVenue}</td>
+                      <td className="border p-3 text-gray-800 text-center">{venue.address}</td>
     
                       <td className="border p-3 text-gray-800 text-center ">{venue.discount}</td>
                       <td className="border p-3 text-gray-800 text-center ">{venue.selectedCity}</td>
@@ -188,7 +202,7 @@ const VenderBrands: React.FC = () => {
             </table>
           </div>
         )}
-              <ServicesModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
+              <VenderServicesModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
       </div>
 
 

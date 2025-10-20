@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { fireDB, storage } from "../../firebase/FirebaseConfig";
+import { fireDB, storage } from "../../../firebase/FirebaseConfig";
 import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import Loader from "../loader/Loader";
-import VenuDropdown from "../dropdown/VenusDropDown";
-import CategoriesDropdown from "../dropdown/CategoriesDropDown";
-import CountriesDropdown from "../dropdown/CountryDropDown";
-import CitiesDropdown from "../dropdown/CityDropDown";
+import Loader from "../../loader/Loader";
+import VenuDropdown from "../../dropdown/VenusDropDown";
+import CategoriesDropdown from "../../dropdown/CategoriesDropDown";
+import CountriesDropdown from "../../dropdown/CountryDropDown";
+import CitiesDropdown from "../../dropdown/CityDropDown";
 
 interface ServicesModalProps {
   isOpen: boolean;
@@ -79,7 +79,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, className, children 
 );
 
 // —————— Component ——————
-const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
+const VenderServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
   const [nameEng, setNameEng] = useState("");
   const [nameArabic, setNameArabic] = useState("");
   const [discount, setDiscount] = useState("");
@@ -93,10 +93,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   const [menuUrl, setMenuUrl] = useState("");
   const [timings, setTimings] = useState({ monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
 
-  const [startAt, setStartAt] = useState("");
-  const [endAt, setEndAt] = useState("");
   const [pin, setPin] = useState("");
-  const [isBestSeller, setIsBestSeller] = useState("");
   const [isVenue, setIsVenue] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -115,7 +112,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
     setNameEng(""); setNameArabic(""); setDescriptionEng(""); setDescriptionArabic(""); setPhoneNumber("");
     setLongitude(""); setLatitude(""); setAddress(""); setDiscount("");
     setMenuUrl(""); setTimings({ monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
-    setStartAt(""); setEndAt(""); setPin(""); setIsBestSeller(""); setIsVenue("");
+      setPin(""); setIsVenue("");
     setSelectedVenue(""); setSelectedCategory(""); setSelectedCity(""); setSelectedCountry("");
     setStatus("No"); setImageUpload(null); setImageUrl(""); setPdfFile(null); setPdfUrl("");
     setMultiImages([]); setMultiImageUrls([]);
@@ -135,10 +132,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       setAddress(editData.address || "");
       setMenuUrl(editData.menuUrl || "");
       setTimings(editData.timings || { monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
-      setStartAt(editData.startAt || "");
-      setEndAt(editData.endAt || "");
       setPin(editData.pin || "");
-      setIsBestSeller(editData.isBestSeller || "");
       setIsVenue(editData.isVenue || "");
       setSelectedVenue(editData.selectedVenue || "");
       setSelectedCategory(editData.selectedCategory || "");
@@ -225,8 +219,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
       const venueData = {
         nameEng, nameArabic, discount, discountArabic, descriptionEng, descriptionArabic,
         PhoneNumber, longitude, latitude, address,
-        menuUrl, timings, startAt, endAt, selectedCategory, pin,
-        isBestSeller, isVenue, selectedCity, selectedCountry, selectedVenue,
+        menuUrl, timings, selectedCategory, pin, isVenue, selectedCity, selectedCountry, selectedVenue,
         status, img: uploadedImageUrl, pdfUrl: uploadedPdfUrl, multiImageUrls: uploadedMultiImageUrls,
         time: Timestamp.now(),
       };
@@ -270,8 +263,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
         <div className="h-[78vh] overflow-y-auto px-6 py-6 md:px-8 md:py-8 space-y-6">
           <Section title="Basic Information">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Field label="Name (English)" id="nameEng" required>
-                <TextInput id="nameEng" placeholder="e.g., Coffee Cloud" value={nameEng} onChange={(e) => setNameEng(e.target.value)} />
+              <Field label="Brand Name (En)" id="nameEng" required>
+                <TextInput id="name (En)" placeholder="e.g., Coffee Cloud" value={nameEng} onChange={(e) => setNameEng(e.target.value)} />
               </Field>
               <Field label="Name (Arabic)" id="nameArabic" required>
                 <TextInput id="nameArabic" dir="rtl" placeholder="مثال: كوفي كلاود" value={nameArabic} onChange={(e) => setNameArabic(e.target.value)} />
@@ -316,13 +309,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
               <Field label="City" id="city" required>
                 <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
               </Field>
-              <Field label="Is Best Seller" id="bestSeller">
-                <Select id="bestSeller" value={isBestSeller} onChange={(e) => setIsBestSeller(e.target.value)}>
-                  <option value="">Select</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </Select>
-              </Field>
+            
               <Field label="Status" id="status">
                 <Select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
                   <option value="">Select</option>
@@ -358,12 +345,8 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
 
           <Section title="Contract & Access">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-              <Field label="Contract Start" id="startAt">
-                <TextInput id="startAt" type="date" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
-              </Field>
-              <Field label="Contract End" id="endAt">
-                <TextInput id="endAt" type="date" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
-              </Field>
+            
+            
               <Field label="PIN" id="pin" hint="Auto-generated">
                 <div className="flex gap-2">
                   <TextInput id="pin" value={pin} readOnly className="w-full" placeholder="— — — — — —" />
@@ -435,329 +418,5 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData
   );
 };
 
-export default ServicesModal;
-
-
-
-// import React, { useState, useEffect } from "react";
-// import { toast } from "react-toastify";
-// import { fireDB, storage } from "../../firebase/FirebaseConfig";
-// import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
-// import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-// import Loader from "../loader/Loader";
-// import VenuDropdown from "../dropdown/VenusDropDown";
-// import CategoriesDropdown from "../dropdown/CategoriesDropDown";
-// import CountriesDropdown from "../dropdown/CountryDropDown";
-// import CitiesDropdown from "../dropdown/CityDropDown";
-
-// interface ServicesModalProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-//   editData?: any;
-// }
-
-// const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onClose, editData }) => {
-//   const [nameEng, setNameEng] = useState("");
-//   const [nameArabic, setNameArabic] = useState("");
-//   const [discount, setDiscount] = useState("");
-//   const [discountArabic, setDiscountArabic] = useState("");
-//   const [descriptionEng, setDescriptionEng] = useState("");
-//   const [descriptionArabic, setDescriptionArabic] = useState("");
-//   const [PhoneNumber, setPhoneNumber] = useState("");
-//   const [longitude, setLongitude] = useState("");
-//   const [latitude, setLatitude] = useState("");
-//   const [address, setAddress] = useState("");
-//   const [menuUrl, setMenuUrl] = useState(""); 
-//   const [timings, setTimings] = useState({
-//     monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "",
-//   });
-
-//   const [startAt, setStartAt] = useState("");
-//   const [endAt, setEndAt] = useState("");
-//   const [pin, setPin] = useState("");
-//   const [isBestSeller, setIsBestSeller] = useState("");
-//   const [isVenue, setIsVenue] = useState("");
-//   const [selectedVenue, setSelectedVenue] = useState("");
-//   const [selectedCategory, setSelectedCategory] = useState("");
-//   const [selectedCity, setSelectedCity] = useState("");
-//   const [selectedCountry, setSelectedCountry] = useState("");
-//   const [status, setStatus] = useState("No");
-//   const [imageUpload, setImageUpload] = useState<File | null>(null);
-//   const [imageUrl, setImageUrl] = useState("");
-//   const [multiImages, setMultiImages] = useState<File[]>([]);
-//   const [multiImageUrls, setMultiImageUrls] = useState<string[]>(editData?.multiImageUrls || []);
-//   const [pdfFile, setPdfFile] = useState<File | null>(null);
-//   const [pdfUrl, setPdfUrl] = useState(editData?.pdfUrl || "");
-//   const [loading, setLoading] = useState(false);
-
-//   const resetForm = () => {
-//     setNameEng(""); setNameArabic(""); setDescriptionEng(""); setDescriptionArabic(""); setPhoneNumber("");
-//     setLongitude(""); setLatitude(""); setAddress(""); setDiscount(""); setDescriptionArabic(""),
-//     setMenuUrl(""); setTimings({ monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
-//     setStartAt(""); setEndAt(""); setPin(""); setIsBestSeller(""); setIsVenue("");
-//     setSelectedVenue(""); setSelectedCategory(""); setSelectedCity(""); setSelectedCountry("");
-//     setStatus("No"); setImageUpload(null); setImageUrl(""); setPdfFile(null); setPdfUrl("");
-//     setMultiImages([]); setMultiImageUrls([]); 
-//   };
-
-//   useEffect(() => {
-//     if (editData) {
-//       setNameEng(editData.nameEng || "");
-//       setNameArabic(editData.nameArabic || "");
-//       setDiscount(editData.discount || "");
-//       setDiscountArabic(editData.discountArabic || "")
-//       setDescriptionEng(editData.descriptionEng || "");
-//       setDescriptionArabic(editData.descriptionArabic || "");
-//       setPhoneNumber(editData.PhoneNumber || "");
-//       setLongitude(editData.longitude || "");
-//       setLatitude(editData.latitude || "");
-//       setAddress(editData.address || "");
-//       setMenuUrl(editData.menuUrl || "");
-//       setTimings(editData.timings || { monday: "", tuesday: "", wednesday: "", thursday: "", friday: "", saturday: "", sunday: "" });
-//       setStartAt(editData.startAt || "");
-//       setEndAt(editData.endAt || "");
-//       setPin(editData.pin || "");
-//       setIsBestSeller(editData.isBestSeller || "");
-//       setIsVenue(editData.isVenue || "");
-//       setSelectedVenue(editData.selectedVenue || "");
-//       setSelectedCategory(editData.selectedCategory || "");
-//       setSelectedCity(editData.selectedCity || "");
-//       setSelectedCountry(editData.selectedCountry || "");
-//       setStatus(editData.status || "");
-//       setImageUrl(editData.img || "");
-//       setMultiImageUrls(editData.multiImageUrls || []);
-//       setPdfUrl(editData.pdfUrl || "");
-//     } else {
-//       resetForm();
-//     }
-//   }, [editData]);
-
-//   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files && e.target.files[0]) {
-//       setImageUpload(e.target.files[0]);
-//       setImageUrl(URL.createObjectURL(e.target.files[0]));
-//     }
-//   };
-
-//   const handleMultiImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files) {
-//       const filesArray = Array.from(e.target.files);
-//       setMultiImages(prev => [...prev, ...filesArray]);
-//       const urls = filesArray.map(file => URL.createObjectURL(file));
-//       setMultiImageUrls(prev => [...prev, ...urls]);
-//     }
-//   };
-
-//   const removeMultiImage = (index: number) => {
-//     setMultiImages(prev => prev.filter((_, i) => i !== index));
-//     setMultiImageUrls(prev => prev.filter((_, i) => i !== index));
-//   };
-
-//   const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files && e.target.files[0]) {
-//       setPdfFile(e.target.files[0]);
-//     }
-//   };
-
-//   const handleTimingChange = (day: string, value: string) => {
-//     setTimings(prev => ({ ...prev, [day]: value }));
-//   };
-
-//   const generatePin = () => {
-//     const randomPin = Math.floor(100000 + Math.random() * 900000);
-//     setPin(randomPin.toString());
-//   };
-
-//   const saveVenue = async () => {
-//     if (!nameEng || !nameArabic || !descriptionEng || !descriptionArabic || !longitude || !latitude ||
-//       !address || !PhoneNumber || !selectedCategory || !selectedCity || (!imageUpload && !editData)) {
-//       return toast.error("All fields are required!");
-//     }
-
-//     setLoading(true);
-//     try {
-//       let uploadedImageUrl = imageUrl;
-//       let uploadedPdfUrl = pdfUrl;
-//       let uploadedMultiImageUrls = [...multiImageUrls];
-
-//       if (imageUpload) {
-//         const imageRef = ref(storage, `H-Brands/images/${imageUpload.name}`);
-//         const snapshot = await uploadBytes(imageRef, imageUpload);
-//         uploadedImageUrl = await getDownloadURL(snapshot.ref);
-//       }
-
-//       if (pdfFile) {
-//         const pdfRef = ref(storage, `H-Brands/pdfs/${pdfFile.name}`);
-//         const pdfSnapshot = await uploadBytes(pdfRef, pdfFile);
-//         uploadedPdfUrl = await getDownloadURL(pdfSnapshot.ref);
-//       }
-
-//       // Upload multiple images
-//       if (multiImages.length > 0) {
-//         uploadedMultiImageUrls = [];
-//         for (const file of multiImages) {
-//           const imgRef = ref(storage, `H-Brands/multiImages/${file.name}`);
-//           const snapshot = await uploadBytes(imgRef, file);
-//           const url = await getDownloadURL(snapshot.ref);
-//           uploadedMultiImageUrls.push(url);
-//         }
-//       }
-
-//       const venueData = {
-//         nameEng, nameArabic, discount,discountArabic, descriptionEng, descriptionArabic,
-//         PhoneNumber, longitude, latitude, address,
-//         menuUrl, timings, startAt, endAt, selectedCategory, pin,
-//         isBestSeller, isVenue, selectedCity, selectedCountry, selectedVenue,
-//         status, img: uploadedImageUrl, pdfUrl: uploadedPdfUrl, multiImageUrls: uploadedMultiImageUrls,
-//         time: Timestamp.now(),
-//       };
-
-//       if (editData) {
-//         await updateDoc(doc(fireDB, "H-Brands", editData.id), venueData);
-//         toast.success("Service updated successfully!");
-//       } else {
-//         await addDoc(collection(fireDB, "H-Brands"), venueData);
-//         toast.success("Service added successfully!");
-//       }
-
-//       resetForm();
-//       onClose();
-//     } catch (error) {
-//       console.error(error);
-//       toast.error("Error saving service");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center pt-10 z-50">
-//       {loading && <Loader />}
-//       <div className="bg-white p-6 rounded-lg w-[90%]  h-[90vh] overflow-y-auto">
-//         <h2 className="text-2xl font-semibold mb-5">{editData ? "Edit Brand Details" : "Add New Brand"}</h2>
-
-//         <div className="grid grid-cols-4 gap-4">
-//           <input placeholder="Name in English" value={nameEng} onChange={e => setNameEng(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Name in Arabic" value={nameArabic} onChange={e => setNameArabic(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Discount" value={discount} onChange={e => setDiscount(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Discount Arabic" value={discountArabic} onChange={e => setDiscountArabic(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Phone Number" value={PhoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Menu URL (optional)" value={menuUrl} onChange={(e) => setMenuUrl(e.target.value)} className="border p-3 rounded-lg" /> 
-//           <input placeholder="Latitude" value={latitude} onChange={e => setLatitude(e.target.value)} className="border p-3 rounded-lg" />
-//           <input placeholder="Longitude" value={longitude} onChange={e => setLongitude(e.target.value)} className="border p-3 rounded-lg" />
-//           <div className=" flex justify-between "  > <input value={pin} readOnly className="border p-3 rounded-lg w-[65%] "   placeholder="Generate Pin" />
-//           <button onClick={generatePin} className="bg-blue-600 text-white p-3.5 border rounded-lg text-sm">Generate</button></div>
-         
-     
-//           <CategoriesDropdown selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-//           <CountriesDropdown selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
-//           <CitiesDropdown selectedCity={selectedCity} onCityChange={setSelectedCity} />
-
-//           <select value={isBestSeller} onChange={e => setIsBestSeller(e.target.value)} className="border p-3 rounded-lg text-sm">
-//             <option value="">Is Best Seller</option>
-//             <option value="Yes">Yes</option>
-//             <option value="No">No</option>
-//           </select>
-//           <select value={status} onChange={e => setStatus(e.target.value)} className="border p-3 rounded-lg text-sm">
-//             <option value="">Status</option>
-//             <option value="Inactive">Inactive</option>
-//             <option value="Active">Active</option>
-//           </select>
-//           <select value={isVenue} onChange={e => setIsVenue(e.target.value)} className="border p-3 rounded-lg text-sm">
-//             <option value="">Is Venue</option>
-//             <option value="Yes">Yes</option>
-//             <option value="No">No</option>
-//           </select>
-//         </div>
-
-      
-
-//         <div className="grid grid-cols-3 gap-4 mt-3">
-        
-        
-        
-          
-//         </div>
-
-//         <div className="grid grid-cols-2 gap-4 mt-3">
-//           <textarea placeholder="Description In English" value={descriptionEng} onChange={e => setDescriptionEng(e.target.value)} className="border p-3 rounded-lg" />
-//           <textarea placeholder="Description In Arabic" value={descriptionArabic} onChange={e => setDescriptionArabic(e.target.value)} className="border p-3 rounded-lg" />
-//         </div>
-//         <div className="grid grid-cols-3 gap-4 mt-3">
-//         {isVenue === "Yes" && <div className="mt-3"><VenuDropdown selectedVenue={selectedVenue} onVenueChange={setSelectedVenue} /></div>}
-//           <div>
-//             <label className="text-sm">Contract Start Date</label>
-//             <input type="date" value={startAt} onChange={e => setStartAt(e.target.value)} className="border p-2 rounded-lg w-full" />
-//           </div>
-//           <div>
-//             <label className="text-sm">Contract End Date</label>
-//             <input type="date" value={endAt} onChange={e => setEndAt(e.target.value)} className="border p-2 rounded-lg w-full" />
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-3 gap-4 mt-4">
-//           {Object.entries(timings).map(([day, value]) => (
-//             <div key={day}>
-//               <label className="text-sm capitalize">{day}</label>
-//               <input
-//                 placeholder="e.g. 10:00 AM - 9:00 PM"
-//                 value={value}
-//                 onChange={(e) => handleTimingChange(day, e.target.value)}
-//                 className="border p-2 rounded-lg w-full text-sm"
-//               />
-//             </div>
-//           ))}
-//         </div>
-
- 
-//         <div className="grid grid-cols-3 gap-4 mt-4">
-//         {/* PDF Upload */}
-//         <div className="mt-5">
-//           {pdfFile || pdfUrl ? (
-//             <div className="mb-4 bg-gray-100 p-3 rounded-lg">
-//               <span>{pdfFile?.name || decodeURIComponent(pdfUrl.split("/").pop()?.split("?")[0] || "")}</span>
-//             </div>
-//           ) : null}
-//           <label htmlFor="pdf-upload" className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg inline-block">Choose Menu PDF</label>
-//           <input type="file" id="pdf-upload" className="hidden" onChange={handlePdfChange} />
-//         </div>
-
-//         {/* Logo Upload */}
-//         {imageUrl && <img src={imageUrl} alt="Preview" className="w-24 h-24 object-cover mt-4 rounded-lg" />}
-//         <div className="mt-3">
-//           <label htmlFor="image-upload" className="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg inline-block">Choose Logo Image</label>
-//           <input type="file" id="image-upload" className="hidden" onChange={handleImageChange} />
-//         </div>
-//         </div>
-//         {/* Multiple Images */}
-//         <div className="mt-5">
-//           <label htmlFor="multi-image-upload" className="cursor-pointer bg-blue-500 text-white px-6 py-2 rounded-lg inline-block">
-//             Choose Multiple Images
-//           </label>
-//           <input type="file" id="multi-image-upload" className="hidden" multiple onChange={handleMultiImageChange} />
-
-//           <div className="flex flex-wrap mt-3 gap-2">
-//             {multiImageUrls.map((url, index) => (
-//               <div key={index} className="relative">
-//                 <img src={url} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-lg" />
-//                 <button onClick={() => removeMultiImage(index)} className="absolute top-0 right-0 bg-red-500 text-red rounded-full w-5 h-5 text-xs flex items-center justify-center">x</button>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//         <div className="mt-6 flex justify-end">
-//           <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-3">Cancel</button>
-//           <button onClick={saveVenue} className="bg-blue-600 text-white px-6 py-2 rounded-lg">{editData ? "Update" : "Save"}</button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ServicesModal;
-
+export default VenderServicesModal;
 

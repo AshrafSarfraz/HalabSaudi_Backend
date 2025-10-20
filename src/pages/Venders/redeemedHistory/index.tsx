@@ -1,43 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig";
-import Layout from "../../../component/layout/Layout";
+
 
 
 export const Vender_Redeemed_Histroy: React.FC = () => {
+  const [venderName, setVenderName] = useState<string>("");
   const [search, setSearch] = useState("");
   const [redeems, setRedeems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const redeemsPerPage = 15;
-
+  
+  
   useEffect(() => {
+    const raw = localStorage.getItem("currentVender");
+    if (!raw) return;
+  
+    const vendorData = JSON.parse(raw);
+    setVenderName(vendorData.name || ""); // adjust key name as needed
+  
     const q = query(collection(fireDB, "hala_redeemed_discounts"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       setLoading(true);
       const redeemArray: any[] = [];
-
+  
       querySnapshot.forEach((doc) => {
         redeemArray.push({
           id: doc.id,
           ...doc.data(),
         });
       });
-
+  
       setRedeems(redeemArray);
       setLoading(false);
     });
-
+  
     return () => unsubscribe();
   }, []);
 
-  const filteredRedeems = redeems.filter(
+
+  
+const filteredRedeems = redeems
+  .filter((item) => item.brand?.toLowerCase() === venderName.toLowerCase()) // ✅ Only this vendor’s data
+  .filter(
     (item) =>
       item.Username?.toLowerCase().includes(search.toLowerCase()) ||
       item.phoneNumber?.includes(search) ||
       item.brand?.toLowerCase().includes(search.toLowerCase())
   );
 
+  
   const indexOfLast = currentPage * redeemsPerPage;
   const indexOfFirst = indexOfLast - redeemsPerPage;
   const currentData = filteredRedeems.slice(indexOfFirst, indexOfLast);

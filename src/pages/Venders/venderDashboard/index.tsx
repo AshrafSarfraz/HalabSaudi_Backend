@@ -6,6 +6,22 @@ function VendorDashboard() {
   const navigate = useNavigate();
   const { name } = location.state || {};
 
+
+  const handleLogout = () => {
+    // ✅ Remove vendor data from localStorage
+    localStorage.removeItem("currentVender");
+
+    // ✅ Optionally clear other vendor-related data if needed
+    // localStorage.clear(); // (use this only if you want to remove all localStorage)
+
+    // ✅ Redirect to login or home page
+    navigate("/vender-login"); // change path as per your app routing
+  };
+
+
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Header */}
@@ -16,7 +32,7 @@ function VendorDashboard() {
         </div>
         <div className="text-lg font-medium">
           Welcome, <span className="font-semibold">{name || "Vendor"}</span>
-          <button onClick={()=>{}}
+          <button     onClick={handleLogout}
         className="bg-yellow-600 py-2 px-6 rounded ml-5">
             Log out
             </button>

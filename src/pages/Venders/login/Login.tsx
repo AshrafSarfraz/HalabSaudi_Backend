@@ -96,7 +96,7 @@ function VenderLogin() {
           </div>
 
           <p className="text-center text-gray-500 text-sm mt-12">
-            © {new Date().getFullYear()} Hala B Saudi — Vendor Portal
+            ©  {new Date().getFullYear()} Hala B Saudi — Vendor Portal
           </p>
         </div>
       </div>
@@ -105,3 +105,4 @@ function VenderLogin() {
 }
 
 export default VenderLogin;
+
