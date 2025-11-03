@@ -59,7 +59,7 @@ const VenderAccounts: React.FC = () => {
   }, []);
 
   // Delete Data
-  const handleDeleteAccount = async (id: string, email: string) => {
+  const handleDeleteAccount = async (id: string, _email: string) => {
     // Prevent deletion if the email matches the specified one
  
     if (!confirm("Are you sure you want to delete this account?")) return;

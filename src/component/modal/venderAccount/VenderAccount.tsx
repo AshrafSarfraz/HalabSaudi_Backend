@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig";
 import Loader from "../../loader/Loader";
-import { useNavigate } from "react-router-dom";
+
 
 
 interface AccountModalProps {
