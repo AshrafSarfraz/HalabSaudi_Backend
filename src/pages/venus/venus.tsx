@@ -1,18 +1,18 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
 import Layout from "../../component/layout/Layout";
 import AddVenusModal from "../../component/modal/VenusModal";
+import { venueApi } from "../../backend/Api/venueApi";
+
 
 interface VenusEntry {
-  id: string;
+  id: string;           // Node ka _id
   img: string;
   venueName: string;
   venueNameAr: string;
-  city:string;
-  country:string;
-  
-  status: "Active" | "Inactive";
+  city: string;
+  country: string;
+  status?: "Active" | "Inactive";
+  time?: string;
 }
 
 const Venus: React.FC = () => {
@@ -21,6 +21,7 @@ const Venus: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState<VenusEntry | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const openModal = (venue?: VenusEntry) => {
     setEditData(venue || null);
@@ -32,44 +33,64 @@ const Venus: React.FC = () => {
     setEditData(null);
   };
 
-  // fetch Data
-  useEffect(() => {
-    setLoading(true);
-    const q = query(collection(fireDB, "H-Venues"), orderBy("time"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const venusArray: VenusEntry[] = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as VenusEntry[];
-      setVenusList(venusArray);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
- 
-  // delete data
-  const handleDeleteVenus = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this venue?")) return;
+  // 🔥 Node API se venues fetch
+  const fetchVenues = async () => {
     try {
-      await deleteDoc(doc(fireDB, "H-Venues", id));
+      setLoading(true);
+      setError(null);
+
+      const data = await venueApi.getAllVenues(); // JS helper → any[]
+
+      const mapped: VenusEntry[] = data.map((v: any) => ({
+        id: v._id,
+        img: v.img || "",
+        venueName: v.venueName || "",
+        venueNameAr: v.venueNameAr || "",
+        city: v.city || "",
+        country: v.country || "",
+        time: v.time,
+      }));
+
+      setVenusList(mapped);
+    } catch (err: any) {
+      console.error(err);
+      setError(err?.message || "Failed to load venues");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVenues();
+  }, []);
+
+  // delete data (Node API)
+  const handleDeleteVenus = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this venue?")) return;
+    try {
+      await venueApi.deleteVenue(id);
       alert("Deleted successfully");
+      setVenusList((prev) => prev.filter((v) => v.id !== id));
     } catch (error) {
-      console.error("Error deleting document:", error);
+      console.error("Error deleting venue:", error);
       alert("Failed to delete");
     }
   };
- 
+
   // search Item
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
+
   const filteredVenusList = venusList.filter((v) =>
-    v.venueName.toLowerCase().includes(searchTerm.toLowerCase())
+    (v.venueName || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <Layout>
       <div className="container mx-auto py-6 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Venues Management</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+          Venues Management
+        </h1>
 
         <div className="flex flex-col md:flex-row md:justify-between items-center mb-6 gap-3">
           <input
@@ -86,6 +107,12 @@ const Venus: React.FC = () => {
             + Add Venue
           </button>
         </div>
+
+        {error && (
+          <div className="mb-4 text-red-600 bg-red-100 px-4 py-2 rounded">
+            {error}
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center items-center py-10">
@@ -109,25 +136,28 @@ const Venus: React.FC = () => {
                   filteredVenusList.map((venue) => (
                     <tr key={venue.id} className="hover:bg-gray-100 transition">
                       <td className="border p-3">
-                        <img
-                          src={venue.img}
-                          alt={venue.venueName}
-                          className="w-12 h-12 object-cover rounded-full"
-                        />
+                        {venue.img ? (
+                          <img
+                            src={venue.img}
+                            alt={venue.venueName}
+                            className="w-12 h-12 object-cover rounded-full"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                        )}
                       </td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.venueName}</td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.venueNameAr}</td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.city}</td>
-                      <td className="border p-3 text-gray-800 text-center ">{venue.country}</td>
-                      {/* <td className="border p-3 text-center">
-                        <span
-                          className={`px-3 py-1 rounded text-white text-sm ${
-                            venue.status === "Active" ? "bg-green-500" : "bg-red-500"
-                          }`}
-                        >
-                          {venue.city}
-                        </span>
-                      </td> */}
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.venueName}
+                      </td>
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.venueNameAr}
+                      </td>
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.city}
+                      </td>
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.country}
+                      </td>
                       <td className="border p-3 text-center space-x-2">
                         <button
                           onClick={() => openModal(venue)}
@@ -146,7 +176,10 @@ const Venus: React.FC = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="text-center py-5 text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="text-center py-5 text-gray-500"
+                    >
                       No venues found.
                     </td>
                   </tr>
@@ -157,7 +190,12 @@ const Venus: React.FC = () => {
         )}
       </div>
 
-      <AddVenusModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
+      <AddVenusModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        editData={editData}
+        onSaved={fetchVenues} // 👈 yahan typo tha, ab sahi function name
+      />
     </Layout>
   );
 };

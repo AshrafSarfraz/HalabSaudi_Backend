@@ -1,33 +1,55 @@
+// src/pages/User.tsx (ya jahan bhi yeh component hai)
 import React, { useEffect, useState } from "react";
 import Layout from "../../component/layout/Layout";
-import { collection, onSnapshot, query } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
+import { redeemApi } from "../../backend/redeemApi";
 
-export const User: React.FC = () => {
+
+export const RedeemUser: React.FC = () => {
   const [search, setSearch] = useState("");
   const [redeems, setRedeems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const redeemsPerPage = 15;
 
+  // ✅ createdAt ko safely human readable string me convert karo
+  const formatCreatedAt = (value: any) => {
+    if (!value) return "N/A";
+
+    // agar kahin purane Firestore ka object aa gaya ho
+    if (typeof value === "object" && typeof value.toDate === "function") {
+      try {
+        return value.toDate().toLocaleString();
+      } catch {
+        return "N/A";
+      }
+    }
+
+    // try parse as date string / timestamp
+    const d = new Date(value);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toLocaleString();
+    }
+
+    // warna jo string hai wohi dikha do
+    return String(value);
+  };
+
   useEffect(() => {
-    const q = query(collection(fireDB, "hala_redeemed_discounts"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setLoading(true);
-      const redeemArray: any[] = [];
+    const fetchRedeems = async () => {
+      try {
+        setLoading(true);
+        const data = await redeemApi.getAll();
+        setRedeems(data);
+      } catch (err) {
+        console.error(err);
+        // optional: toast use karna ho to yahan kar sakte ho
+        // toast.error("Failed to load redeemed discounts");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      querySnapshot.forEach((doc) => {
-        redeemArray.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setRedeems(redeemArray);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    fetchRedeems();
   }, []);
 
   const filteredRedeems = redeems.filter(
@@ -81,7 +103,7 @@ export const User: React.FC = () => {
                 </thead>
                 <tbody>
                   {currentData.map((item, index) => (
-                    <tr key={item.id || index} className="hover:bg-gray-100">
+                    <tr key={item.id || item._id || index} className="hover:bg-gray-100">
                       <td className="border p-2">{item.Username || "N/A"}</td>
                       <td className="border p-2">{item.phoneNumber || "N/A"}</td>
                       <td className="border p-2">{item.brand || "N/A"}</td>
@@ -89,9 +111,7 @@ export const User: React.FC = () => {
                       <td className="border p-2">{item.date || "N/A"}</td>
                       <td className="border p-2">{item.percentage || "N/A"}</td>
                       <td className="border p-2">
-                        {item.createdAt?.toDate
-                          ? item.createdAt.toDate().toLocaleString()
-                          : "N/A"}
+                        {formatCreatedAt(item.createdAt)}
                       </td>
                     </tr>
                   ))}

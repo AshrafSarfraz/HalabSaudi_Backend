@@ -1,31 +1,25 @@
+// src/component/modal/Group_AccountModal.tsx
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { fireDB } from "../../firebase/FirebaseConfig";
-import { Timestamp, addDoc, doc, updateDoc, collection } from "firebase/firestore";
 import Loader from "../loader/Loader";
+import { GroupAccountEntry } from "../../pages/Group Account/GroupAccount";
+import { groupAccountApi } from "../../backend/Api/groupAccountApi";
+
+
 
 interface GroupAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editData?: {
-    id: string;
-    supplierName: string;
-    groupName: string;
-    email: string;
-    phoneNumber: string;
-    crNumber?: string;
-    contractHolder?: string;
-    ourRepresentative?: string;
-    contactPerson?: {
-      name: string;
-      phone: string;
-      email: string;
-      position: string;
-    };
-  } | null;
+  editData?: GroupAccountEntry | null;
+  onSaved?: () => void; // 👈 parent ko notify karne ke liye
 }
 
-const GroupAccountModal: React.FC<GroupAccountModalProps> = ({ isOpen, onClose, editData }) => {
+const GroupAccountModal: React.FC<GroupAccountModalProps> = ({
+  isOpen,
+  onClose,
+  editData,
+  onSaved,
+}) => {
   const [supplierName, setSupplierName] = useState("");
   const [groupName, setGroupName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,50 +68,39 @@ const GroupAccountModal: React.FC<GroupAccountModalProps> = ({ isOpen, onClose, 
   };
 
   const saveGroupAccount = async () => {
-    if (!supplierName || !groupName || !email || !phoneNumber  ) {
+    if (!supplierName || !groupName || !email || !phoneNumber) {
       return toast.error("All required fields must be filled!");
     }
 
+    const payload = {
+      supplierName,
+      groupName,
+      email,
+      phoneNumber,
+      crNumber,
+      contractHolder,
+      ourRepresentative,
+      contactPerson: {
+        name: contactName,
+        phone: contactPhone,
+        email: contactEmail,
+        position: contactPosition,
+      },
+    };
+
     setLoading(true);
     try {
-      if (editData) {
-        await updateDoc(doc(fireDB, "H-Group-Accounts", editData.id), {
-          supplierName,
-          groupName,
-          email,
-          phoneNumber,
-          crNumber,
-          contractHolder,
-          ourRepresentative,
-          contactPerson: {
-            name: contactName,
-            phone: contactPhone,
-            email: contactEmail,
-            position: contactPosition,
-          },
-        });
+      if (editData?.id) {
+        await groupAccountApi.update(editData.id, payload);
         toast.success("Group Account updated successfully!");
       } else {
-        await addDoc(collection(fireDB, "H-Group-Accounts"), {
-          supplierName,
-          groupName,
-          email,
-          phoneNumber,
-          crNumber,
-          contractHolder,
-          ourRepresentative,
-          contactPerson: {
-            name: contactName,
-            phone: contactPhone,
-            email: contactEmail,
-            position: contactPosition,
-          },
-          time: Timestamp.now(),
-        });
+        await groupAccountApi.create(payload);
         toast.success("Group Account added successfully!");
       }
+
       onClose();
       resetFields();
+      onSaved && onSaved(); // 👈 parent ko bol do ke dubara fetch kare
     } catch (error) {
       console.error(error);
       toast.error("Error saving Group Account");
@@ -158,7 +141,7 @@ const GroupAccountModal: React.FC<GroupAccountModalProps> = ({ isOpen, onClose, 
             value={crNumber}
             onChange={(e) => setCrNumber(e.target.value)}
             className="border p-3 w-full rounded-lg"
-            placeholder="CR Number "
+            placeholder="CR Number"
           />
           <input
             type="email"
@@ -175,25 +158,6 @@ const GroupAccountModal: React.FC<GroupAccountModalProps> = ({ isOpen, onClose, 
             placeholder="Phone Number *"
           />
         </div>
-
-        {/* Contract Info */}
-        {/* <h3 className="text-lg font-semibold mb-3 text-blue-700">Contract Details</h3>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <input
-            type="text"
-            value={contractHolder}
-            onChange={(e) => setContractHolder(e.target.value)}
-            className="border p-3 w-full rounded-lg"
-            placeholder="Supplier Contract Holder *"
-          />
-          <input
-            type="text"
-            value={ourRepresentative}
-            onChange={(e) => setOurRepresentative(e.target.value)}
-            className="border p-3 w-full rounded-lg"
-            placeholder="Our Company Representative *"
-          />
-        </div> */}
 
         {/* Contact Person */}
         <h3 className="text-lg font-semibold mb-3 text-blue-900">Contact Person Info</h3>
@@ -230,7 +194,13 @@ const GroupAccountModal: React.FC<GroupAccountModalProps> = ({ isOpen, onClose, 
 
         {/* Buttons */}
         <div className="flex justify-end space-x-4 mt-6">
-          <button onClick={onClose} className="px-5 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
+          <button
+            onClick={() => {
+              onClose();
+              resetFields();
+            }}
+            className="px-5 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+          >
             Cancel
           </button>
           <button

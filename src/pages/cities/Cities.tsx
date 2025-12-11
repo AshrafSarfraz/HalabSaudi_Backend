@@ -1,9 +1,9 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
 import Layout from "../../component/layout/Layout";
 import CityModal from "../../component/modal/CitiesModal";
 import { toast } from "react-toastify";
+import { citiesApi } from "../../backend/Api/citiesApi";
+
 
 interface CityEntry {
   id: string;
@@ -29,36 +29,52 @@ const Cities: React.FC = () => {
     setEditData(null);
   };
 
-  // Fetch Data
-  useEffect(() => {
-    setLoading(true);
-    const q = query(collection(fireDB, "H-Cities"), orderBy("time"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const citiesArray: CityEntry[] = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as CityEntry[];
-      setCitiesList(citiesArray);
-      setLoading(false);
-    });
+  // 🔥 Node API se data fetch
+  const fetchCities = async () => {
+    try {
+      setLoading(true);
+      const data = await citiesApi.getAllCities();
 
-    return () => unsubscribe();
+      console.log("Cities API response:", data); // debug ke liye
+
+      const mapped: CityEntry[] = data.map((c: any) => ({
+        id: c._id,
+        cityName: c.cityName || "",
+        countryName: c.countryName || "",
+        countryCode: c.countryCode || "",
+      }));
+
+      setCitiesList(mapped);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.message || "Failed to load cities");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Mount pe load
+  useEffect(() => {
+    fetchCities();
   }, []);
 
-  // Delete Data
+  // Delete Data (Node API)
   const handleDeleteCity = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this city?")) return;
+    if (!window.confirm("Are you sure you want to delete this city?")) return;
     try {
-      await deleteDoc(doc(fireDB, "H-Cities", id)); // Fixed collection name from "Cities" to "Venues"
+      await citiesApi.deleteCity(id);
       toast.success("City deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting document:", error);
-      toast.error("Failed to delete city");
+      setCitiesList((prev) => prev.filter((city) => city.id !== id));
+    } catch (error: any) {
+      console.error("Error deleting city:", error);
+      toast.error(error?.message || "Failed to delete city");
     }
   };
 
   // Search Item
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
+
   const filteredCitiesList = citiesList.filter((c) =>
     c.cityName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -66,7 +82,9 @@ const Cities: React.FC = () => {
   return (
     <Layout>
       <div className="container mx-auto py-6 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">City and Country Management</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+          City and Country Management
+        </h1>
 
         <div className="flex flex-col md:flex-row md:justify-between items-center mb-6 gap-3">
           <input
@@ -103,9 +121,15 @@ const Cities: React.FC = () => {
                 {filteredCitiesList.length > 0 ? (
                   filteredCitiesList.map((city) => (
                     <tr key={city.id} className="hover:bg-gray-100 transition">
-                      <td className="border p-3 text-center text-gray-800">{city.cityName}</td>
-                      <td className="border p-3 text-center text-gray-800">{city.countryName}</td>
-                      <td className="border p-3 text-center text-gray-800">{city.countryCode}</td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {city.cityName}
+                      </td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {city.countryName}
+                      </td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {city.countryCode}
+                      </td>
                       <td className="border p-3 text-center space-x-2">
                         <button
                           onClick={() => openModal(city)}
@@ -124,7 +148,10 @@ const Cities: React.FC = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="text-center py-5 text-gray-500">
+                    <td
+                      colSpan={4}
+                      className="text-center py-5 text-gray-500"
+                    >
                       No cities found.
                     </td>
                   </tr>
@@ -135,12 +162,14 @@ const Cities: React.FC = () => {
         )}
       </div>
 
-      <CityModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
+      <CityModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        editData={editData}
+        onSaved={fetchCities} // ✅ create/update ke baad refresh
+      />
     </Layout>
   );
 };
 
 export default Cities;
-
-
-

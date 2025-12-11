@@ -26,8 +26,8 @@ const ViewBrandModal: React.FC<ViewBrandModalProps> = ({ isOpen, onClose, brandD
           <div><strong>Subscription Start:</strong> {brandData.startAt}</div>
           <div><strong>Subscription End:</strong> {brandData.endAt}</div>
           <div><strong>Group ID:</strong> {brandData.groupId}</div>
-          <div><strong>PDF:</strong> {brandData.pdfUrl && <a href={brandData.pdfUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">View PDF</a>}</div>
-          <div><strong>Logo:</strong> {brandData.img && <img src={brandData.img} alt="Logo" className="w-10 h-10 object-cover rounded-lg" />}</div>
+          {/* <div><strong>PDF:</strong> {brandData.pdfUrl && <a href={brandData.pdfUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">View PDF</a>}</div>
+          <div><strong>Logo:</strong> {brandData.img && <img src={brandData.img} alt="Logo" className="w-10 h-10 object-cover rounded-lg" />}</div> */}
       </div>
 
         <div className="mt-6 flex justify-end">

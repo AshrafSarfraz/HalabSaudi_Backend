@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/home/Home";
 import Services from "./pages/services/Services";
 import Offers from "./pages/offers/Offer";
-import { User } from "./pages/user/User";
+import { RedeemUser } from "./pages/redeemUser/redeemUser";
 import Venus from "./pages/venus/venus";
 import CityManagementScreen from "./pages/cities/Cities";
 import AccountManagementScreen from "./pages/accounts/Account";
@@ -33,7 +33,7 @@ function App() {
         {/* Admin side routes */}
         <Route path="/" element={<ProtectedRoutes><Home /></ProtectedRoutes>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/users" element={<ProtectedRoutes><User /></ProtectedRoutes>} />
+        <Route path="/users" element={<ProtectedRoutes><RedeemUser/></ProtectedRoutes>} />
         <Route path="/venues" element={<ProtectedRoutes><Venus /></ProtectedRoutes>} />
         <Route path="/services" element={<ProtectedRoutes><Services /></ProtectedRoutes>} />
         <Route path="/offers" element={<ProtectedRoutes><Offers /></ProtectedRoutes>} />

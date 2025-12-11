@@ -1,10 +1,11 @@
+// src/pages/Group_Account.tsx (path adjust kar lena)
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
 import Layout from "../../component/layout/Layout";
 import GroupAccountModal from "../../component/modal/Group_AccountModal";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; // ✅ Correct hook
+import { useNavigate } from "react-router-dom";
+import { groupAccountApi } from "../../backend/Api/groupAccountApi";
+
 
 interface ContactPerson {
   name: string;
@@ -13,17 +14,20 @@ interface ContactPerson {
   position: string;
 }
 
-interface GroupAccountEntry {
+export interface GroupAccountEntry {
   id: string;
   supplierName: string;
   groupName: string;
   email: string;
   phoneNumber: string;
+  crNumber?: string;
+  contractHolder?: string;
+  ourRepresentative?: string;
   contactPerson?: ContactPerson;
 }
 
 const Group_Account: React.FC = () => {
-  const navigate = useNavigate(); // ✅ Correct usage
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupAccounts, setGroupAccounts] = useState<GroupAccountEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,30 +44,45 @@ const Group_Account: React.FC = () => {
     setEditData(null);
   };
 
-  // Fetch Data
-  useEffect(() => {
-    setLoading(true);
-    const q = query(collection(fireDB, "H-Group-Accounts"), orderBy("time", "desc"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const accountsArray: GroupAccountEntry[] = querySnapshot.docs.map((docSnap) => ({
-        ...(docSnap.data() as Omit<GroupAccountEntry, "id">),
-        id: docSnap.id,
-      }));
-      setGroupAccounts(accountsArray);
+  // ✅ API se data lana (Firestore snapshot ki jagah)
+  const fetchGroupAccounts = async () => {
+    try {
+      setLoading(true);
+      const data = await groupAccountApi.getAll();
+      // Backend se _id aata ho to map kar sakte ho:
+      const normalized = data.map((item: any) => ({
+        id: item._id || item.id,
+        supplierName: item.supplierName || "",
+        groupName: item.groupName || "",
+        email: item.email || "",
+        phoneNumber: item.phoneNumber || "",
+        crNumber: item.crNumber,
+        contractHolder: item.contractHolder,
+        ourRepresentative: item.ourRepresentative,
+        contactPerson: item.contactPerson,
+      })) as GroupAccountEntry[];
+      setGroupAccounts(normalized);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load group accounts");
+    } finally {
       setLoading(false);
-    });
+    }
+  };
 
-    return () => unsubscribe();
+  useEffect(() => {
+    fetchGroupAccounts();
   }, []);
 
-  // Delete Data
+  // ✅ API se delete
   const handleDeleteAccount = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this group account?")) return;
     try {
-      await deleteDoc(doc(fireDB, "H-Group-Accounts", id));
+      await groupAccountApi.remove(id);
       toast.success("Group account deleted successfully!");
+      fetchGroupAccounts(); // list refresh
     } catch (error) {
-      console.error("Error deleting document:", error);
+      console.error("Error deleting account:", error);
       toast.error("Failed to delete group account");
     }
   };
@@ -71,7 +90,7 @@ const Group_Account: React.FC = () => {
   // Search
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
   const filteredAccounts = groupAccounts.filter((c) =>
-    c.groupName.toLowerCase().includes(searchTerm.toLowerCase())
+    c.groupName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -157,7 +176,12 @@ const Group_Account: React.FC = () => {
         )}
       </div>
 
-      <GroupAccountModal isOpen={isModalOpen} onClose={closeModal} editData={editData} />
+      <GroupAccountModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        editData={editData}
+        onSaved={fetchGroupAccounts} // 👈 save ke baad list refresh
+      />
     </Layout>
   );
 };

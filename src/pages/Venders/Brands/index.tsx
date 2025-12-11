@@ -1,14 +1,15 @@
+// src/pages/Venders/Brands.tsx
 import React, { useState, useEffect, ChangeEvent } from "react";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
-import { fireDB } from "../../../firebase/FirebaseConfig";
+
 import VenderServicesModal from "../../../component/modal/venderAccount/VenderServiceBrand";
+import { deleteBrand, getBrands } from "../../../backend/Api/brandApi";
+
+// Optional type if backend sends discounts array
+interface DiscountItem {
+  value: number;
+  descriptionEng: string;
+  descriptionArabic: string;
+}
 
 interface VenusEntry {
   id: string;
@@ -20,10 +21,7 @@ interface VenusEntry {
   longitude: string;
   latitude: string;
   address: string;
-  discount: string;
-  discountArabic: string;
 
-  // New timing fields
   timings: {
     monday: string;
     tuesday: string;
@@ -44,13 +42,16 @@ interface VenusEntry {
   selectedCountry: any | null;
   status: string;
 
-  // Media
-  img: string; // main logo image
-  multiImageUrls: string[]; // multiple images
+  img: string;
+  multiImageUrls: string[];
   pdfUrl: string;
-  menuUrl: string; // optional menu URL
+  menuUrl: string;
 
-  imageUrl?: string; // local preview URL, optional
+  discount?: string;
+  discounts?: DiscountItem[];
+
+  imageUrl?: string;
+  _id?: string;
 }
 
 const VenderBrands: React.FC = () => {
@@ -71,47 +72,60 @@ const VenderBrands: React.FC = () => {
     setEditData(null);
   };
 
-  // fetch Data
+  // Fetch brands
   useEffect(() => {
     const raw = localStorage.getItem("currentVender");
-    if (!raw) return;
+    if (raw) {
+      const vendorData = JSON.parse(raw);
+      setVenderName(vendorData.name || "");
+    }
 
-    const vendorData = JSON.parse(raw);
-    setVenderName(vendorData.name || ""); // adjust key name as needed
+    const fetchBrands = async () => {
+      try {
+        setLoading(true);
+        const brands = await getBrands();
 
-    setLoading(true);
-    const q = query(collection(fireDB, "H-Brands"), orderBy("time"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const venusArray: VenusEntry[] = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as VenusEntry[];
-      setVenusList(venusArray);
-      setLoading(false);
-    });
+        const normalized = (brands || []).map((b: any) => ({
+          ...b,
+          id: b.id || b._id,
+        }));
 
-    return () => unsubscribe();
+        setVenusList(normalized);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBrands();
   }, []);
 
-  // delete data
   const handleDeleteVenus = async (id: string) => {
     if (!confirm("Are you sure you want to delete this venue?")) return;
+
     try {
-      await deleteDoc(doc(fireDB, "H-Brands", id));
+      await deleteBrand(id);
       alert("Deleted successfully");
+      setVenusList((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
-      console.error("Error deleting document:", error);
+      console.error("Error deleting brand:", error);
       alert("Failed to delete");
     }
   };
 
-  // search Item
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchTerm(e.target.value);
 
   const filteredVenusList = venusList
-    .filter((item) => item.nameEng?.toLowerCase() === venderName.toLowerCase())
-    .filter((v) => v.nameEng.toLowerCase().includes(searchTerm.toLowerCase()));
+    .filter((item) =>
+      venderName
+        ? item.nameEng?.toLowerCase() === venderName.toLowerCase()
+        : true
+    )
+    .filter((v) =>
+      v.nameEng?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -147,12 +161,11 @@ const VenderBrands: React.FC = () => {
                 <th className="border p-3 text-center">Logo</th>
                 <th className="border p-3 text-center">Brand Name</th>
                 <th className="border p-3 text-center">Venue</th>
-                <th className="border p-3 text-center">Discount</th>
-
+                {/* 🔴 Discount column removed */}
                 <th className="border p-3 text-center">City</th>
                 <th className="border p-3 text-center">Status</th>
                 <th className="border p-3 text-center">Pin</th>
-                <th className="border p-3 text-lcenter">Contract End At</th>
+                <th className="border p-3 text-center">Contract End At</th>
                 <th className="border p-3 text-center">Actions</th>
               </tr>
             </thead>
@@ -173,12 +186,9 @@ const VenderBrands: React.FC = () => {
                     <td className="border p-3 text-gray-800 text-center">
                       {venue.address}
                     </td>
-
-                    <td className="border p-3 text-gray-800 text-center ">
-                      {venue.discount}
-                    </td>
-                    <td className="border p-3 text-gray-800 text-center ">
-                      {venue.selectedCity}
+                    {/* 🔴 Discount cell removed */}
+                    <td className="border p-3 text-gray-800 text-center">
+                      {String(venue.selectedCity || "")}
                     </td>
                     <td
                       className={`border p-3 text-gray-800 text-center ${
@@ -189,17 +199,16 @@ const VenderBrands: React.FC = () => {
                     >
                       {venue.status}
                     </td>
-                    <td className="border p-3 text-gray-800 text-center ">
+                    <td className="border p-3 text-gray-800 text-center">
                       {venue.pin}
                     </td>
-                    <td className="border p-3 text-gray-800 text-center ">
+                    <td className="border p-3 text-gray-800 text-center">
                       {venue.endAt}
                     </td>
-
                     <td className="border p-3 text-center space-x-2">
                       <button
                         onClick={() => openModal(venue)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3  py-1 rounded transition duration-200"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
                       >
                         Edit
                       </button>
@@ -223,6 +232,7 @@ const VenderBrands: React.FC = () => {
           </table>
         </div>
       )}
+
       <VenderServicesModal
         isOpen={isModalOpen}
         onClose={closeModal}

@@ -1,11 +1,11 @@
+// src/pages/BrandList.tsx
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { collection, onSnapshot, query, where, doc, deleteDoc } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
 import Layout from "../../component/layout/Layout";
 import { toast } from "react-toastify";
 import BrandListModal from "../../component/modal/GroupAccountBrand";
 import ViewBrandModal from "../../component/modal/GroupAcc_ViewBrand";
+import { groupBrandApi } from "../../backend/Api/groupBrandApi";
 
 interface BrandEntry {
   id: string;
@@ -17,15 +17,13 @@ interface BrandEntry {
   startAt: string;
   endAt: string;
   category: string;
-  city: any | null;
-  country: any | null;
-  img: string;
-  pdfUrl: string;
+  city: string;
+  country: string;
   groupId: string;
 }
 
 const BrandList: React.FC = () => {
-  const { id: groupId } = useParams(); // group ID from URL
+  const { id: groupId } = useParams();
   const location = useLocation();
   const groupData = (location.state as { groupData: any })?.groupData;
 
@@ -51,46 +49,79 @@ const BrandList: React.FC = () => {
     setViewBrand(brand);
     setIsViewModalOpen(true);
   };
-  
+
   const closeViewModal = () => {
     setViewBrand(null);
     setIsViewModalOpen(false);
   };
 
-  // Fetch brands for this group
-  useEffect(() => {
+  const extractGroupId = (rawGroupId: any): string => {
+    if (!rawGroupId) return "";
+    if (typeof rawGroupId === "object" && "_id" in rawGroupId) {
+      return String(rawGroupId._id);
+    }
+    return String(rawGroupId);
+  };
+
+  const fetchBrands = async () => {
     if (!groupId) return;
-    setLoading(true);
-    const q = query(
-      collection(fireDB, "H-GROUP_Brands"),
-      where("groupId", "==", groupId),
-      // orderBy("createdAt", "desc")
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const arr: BrandEntry[] = snapshot.docs.map((doc) => ({
-        ...(doc.data() as Omit<BrandEntry, "id">),
-        id: doc.id,
-      }));
-      setBrands(arr);
+    try {
+      setLoading(true);
+      const data = await groupBrandApi.getAll();
+
+      const normalized: BrandEntry[] = (data || []).map((item: any) => {
+        const mappedGroupId = extractGroupId(item.groupId);
+
+        return {
+          id: String(item._id || item.id),
+          brandName: item.brandName || "",
+          // 👇 yahan dono handle kar rahe hain: PhoneNumber + phoneNumber
+          PhoneNumber: item.PhoneNumber || item.phoneNumber || "",
+          address: item.address || "",
+          discount: item.discount || "",
+          subscription: item.subscription || "",
+          startAt: item.startAt || "",
+          endAt: item.endAt || "",
+          category: item.category || "",
+          city: item.city || "",
+          country: item.country || "",
+          groupId: mappedGroupId,
+        };
+      });
+
+      const filtered = normalized.filter(
+        (b) => String(b.groupId) === String(groupId)
+      );
+
+      setBrands(filtered);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load brands");
+    } finally {
       setLoading(false);
-    });
-    return () => unsubscribe();
+    }
+  };
+
+  useEffect(() => {
+    fetchBrands();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupId]);
 
-  // Delete brand
   const handleDeleteBrand = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this brand?")) return;
     try {
-      await deleteDoc(doc(fireDB, "H-GROUP_Brands", id));
+      await groupBrandApi.remove(id);
       toast.success("Brand deleted successfully!");
+      fetchBrands();
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete brand");
     }
   };
 
-  // Search
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
+
   const filteredBrands = brands.filter((b) =>
     b.brandName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -98,9 +129,12 @@ const BrandList: React.FC = () => {
   return (
     <Layout>
       <div className="container mx-auto py-6 px-4">
-        <h1 className="text-2xl font-bold mb-2">Brands for {groupData?.groupName}</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          Brands for {groupData?.groupName}
+        </h1>
         <p className="text-gray-500 mb-6">
-          Supplier: {groupData?.supplierName} | Contact: {groupData?.contactPerson?.name}
+          Supplier: {groupData?.supplierName} | Contact:{" "}
+          {groupData?.contactPerson?.name}
         </p>
 
         <div className="flex flex-col md:flex-row md:justify-between items-center mb-6 gap-3">
@@ -128,8 +162,8 @@ const BrandList: React.FC = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-200 text-gray-700 uppercase text-sm">
-                  <th className="border p-3 text-center">Logo</th>
                   <th className="border p-3 text-center">Brand Name</th>
+                  <th className="border p-3 text-center">Phone</th>
                   <th className="border p-3 text-center">Discount</th>
                   <th className="border p-3 text-center">City</th>
                   <th className="border p-3 text-center">Status</th>
@@ -141,26 +175,38 @@ const BrandList: React.FC = () => {
                 {filteredBrands.length > 0 ? (
                   filteredBrands.map((brand) => (
                     <tr key={brand.id} className="hover:bg-gray-100 transition">
-                      <td className="border p-3">
-                        <img
-                          src={brand.img}
-                          alt={brand.brandName}
-                          className="w-12 h-12 object-cover rounded-full"
-                        />
+                      <td className="border p-3 text-center text-gray-800">
+                        {brand.brandName}
                       </td>
-                      <td className="border p-3 text-center text-gray-800">{brand.brandName}</td>
-                      <td className="border p-3 text-center text-gray-800">{brand.discount}</td>
-                      <td className="border p-3 text-center text-gray-800">{brand.city}</td>
-                      <td className={`border p-3 text-center ${brand.subscription === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      <td className="border p-3 text-center text-gray-800">
+                        {brand.PhoneNumber}
+                      </td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {brand.discount}
+                      </td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {brand.city}
+                      </td>
+                      <td
+                        className={`border p-3 text-center ${
+                          brand.subscription === "Active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
                         {brand.subscription}
                       </td>
-                      <td className="border p-3 text-center text-gray-800">{brand.endAt}</td>
+                      <td className="border p-3 text-center text-gray-800">
+                        {brand.endAt}
+                      </td>
                       <td className="border p-3 text-center space-x-2">
-                      <button
-                       onClick={() => openViewModal(brand)}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition duration-200"
-                        >View</button>
-                       
+                        <button
+                          onClick={() => openViewModal(brand)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition duration-200"
+                        >
+                          View
+                        </button>
+
                         <button
                           onClick={() => openModal(brand)}
                           className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-200"
@@ -189,9 +235,18 @@ const BrandList: React.FC = () => {
         )}
       </div>
 
-      <BrandListModal isOpen={isModalOpen} onClose={closeModal} editData={editData} groupId={groupId!} />
-      <ViewBrandModal isOpen={isViewModalOpen} onClose={closeViewModal} brandData={viewBrand} />
-
+      <BrandListModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        editData={editData}
+        groupId={groupId!}
+        onSaved={fetchBrands}
+      />
+      <ViewBrandModal
+        isOpen={isViewModalOpen}
+        onClose={closeViewModal}
+        brandData={viewBrand}
+      />
     </Layout>
   );
 };
