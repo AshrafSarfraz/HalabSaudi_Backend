@@ -14,27 +14,34 @@ export const Vender_Redeemed_Histroy: React.FC = () => {
 const formatCreatedAt = (value: any) => {
   if (value === null || value === undefined || value === "") return "N/A";
 
-  // Firestore Timestamp support (agar kabhi aa jaye)
+  const fixYear = (d: Date) => {
+    if (d.getFullYear() < 2025) {
+      d.setFullYear(2025); // ✅ sirf year update
+    }
+    return d.toLocaleString();
+  };
+
+  // Firestore Timestamp support
   if (typeof value === "object" && typeof value.toDate === "function") {
     try {
-      return value.toDate().toLocaleString();
+      const d = value.toDate();
+      return fixYear(d);
     } catch {
       return "N/A";
     }
   }
 
-  // ✅ milliseconds timestamp support (number OR numeric string)
+  // milliseconds timestamp (number OR numeric string)
   const num = typeof value === "number" ? value : Number(value);
   if (!Number.isNaN(num) && num > 0) {
     const d = new Date(num);
-    if (!Number.isNaN(d.getTime())) return d.toLocaleString();
+    if (!Number.isNaN(d.getTime())) return fixYear(d);
   }
 
-  // ISO / normal date string support
+  // ISO / normal date string
   const d2 = new Date(value);
-  if (!Number.isNaN(d2.getTime())) return d2.toLocaleString();
+  if (!Number.isNaN(d2.getTime())) return fixYear(d2);
 
-  // fallback
   return String(value);
 };
 
