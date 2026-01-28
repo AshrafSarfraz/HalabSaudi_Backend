@@ -10,23 +10,34 @@ export const Vender_Redeemed_Histroy: React.FC = () => {
 
   const redeemsPerPage = 15;
 
-  // ✅ createdAt formatter (Firestore + API safe)
-  const formatCreatedAt = (value: any) => {
-    if (!value) return "N/A";
+// ✅ createdAt ko safely human readable string me convert karo (ms timestamp + string + Date)
+const formatCreatedAt = (value: any) => {
+  if (value === null || value === undefined || value === "") return "N/A";
 
-    if (typeof value === "object" && typeof value.toDate === "function") {
-      try {
-        return value.toDate().toLocaleString();
-      } catch {
-        return "N/A";
-      }
+  // Firestore Timestamp support (agar kabhi aa jaye)
+  if (typeof value === "object" && typeof value.toDate === "function") {
+    try {
+      return value.toDate().toLocaleString();
+    } catch {
+      return "N/A";
     }
+  }
 
-    const d = new Date(value);
+  // ✅ milliseconds timestamp support (number OR numeric string)
+  const num = typeof value === "number" ? value : Number(value);
+  if (!Number.isNaN(num) && num > 0) {
+    const d = new Date(num);
     if (!Number.isNaN(d.getTime())) return d.toLocaleString();
+  }
 
-    return String(value);
-  };
+  // ISO / normal date string support
+  const d2 = new Date(value);
+  if (!Number.isNaN(d2.getTime())) return d2.toLocaleString();
+
+  // fallback
+  return String(value);
+};
+
 
   useEffect(() => {
     const raw = localStorage.getItem("currentVender");
