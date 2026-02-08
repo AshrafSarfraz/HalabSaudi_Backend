@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig";
+import { venueApi } from "../../backend/Api/venueApi";
 
-// Define Props Type
 interface VenueDropdownProps {
   selectedVenue: string;
   onVenueChange: (venueName: string) => void;
 }
 
-const VenueDropdown: React.FC<VenueDropdownProps> = ({ selectedVenue, onVenueChange }) => {
+const VenueDropdown: React.FC<VenueDropdownProps> = ({
+  selectedVenue,
+  onVenueChange,
+}) => {
   const [venues, setVenues] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchVenues = async () => {
+      setLoading(true);
       try {
-        const snapshot = await getDocs(collection(fireDB, "H-Venues")); // Correct collection name (Venues, not Venus)
-        const venueList = snapshot.docs.map((doc) => doc.data().venueName) as string[]; // Only store venue names
+        const data = await venueApi.getAllVenues(); // API se list
+        // backend se object array aata hoga: [{ venueName: "...", ... }]
+        const venueList = (data || [])
+          .map((v: any) => v.venueName)
+          .filter(Boolean) as string[];
+
         setVenues(venueList);
       } catch (error) {
         console.error("Error fetching venues:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -28,10 +37,11 @@ const VenueDropdown: React.FC<VenueDropdownProps> = ({ selectedVenue, onVenueCha
   return (
     <select
       value={selectedVenue}
-      onChange={(e) => onVenueChange(e.target.value)} // Pass only the venueName
+      onChange={(e) => onVenueChange(e.target.value)}
       className="border p-3 w-full rounded-lg"
+      disabled={loading}
     >
-      <option value="">Select Venue</option>
+      <option value="">{loading ? "Loading venues..." : "Select Venue"}</option>
       {venues.map((venue) => (
         <option key={venue} value={venue}>
           {venue}
