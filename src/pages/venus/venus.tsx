@@ -3,14 +3,15 @@ import Layout from "../../component/layout/Layout";
 import AddVenusModal from "../../component/modal/VenusModal";
 import { venueApi } from "../../backend/Api/venueApi";
 
-
 interface VenusEntry {
-  id: string;           // Node ka _id
+  id: string;
   img: string;
   venueName: string;
   venueNameAr: string;
   city: string;
   country: string;
+  longitude?: number;
+  latitude?: number;
   status?: "Active" | "Inactive";
   time?: string;
 }
@@ -48,6 +49,8 @@ const Venus: React.FC = () => {
         venueNameAr: v.venueNameAr || "",
         city: v.city || "",
         country: v.country || "",
+        longitude: v.longitude,
+        latitude: v.latitude,
         time: v.time,
       }));
 
@@ -128,6 +131,8 @@ const Venus: React.FC = () => {
                   <th className="border p-3 text-center">Venue Name (Ar)</th>
                   <th className="border p-3 text-center">City</th>
                   <th className="border p-3 text-center">Country</th>
+                  <th className="border p-3 text-center">Longitude</th>
+                  <th className="border p-3 text-center">Latitude</th>
                   <th className="border p-3 text-center">Actions</th>
                 </tr>
               </thead>
@@ -158,6 +163,13 @@ const Venus: React.FC = () => {
                       <td className="border p-3 text-gray-800 text-center">
                         {venue.country}
                       </td>
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.longitude ?? "-"}
+                      </td>
+                      <td className="border p-3 text-gray-800 text-center">
+                        {venue.latitude ?? "-"}
+                      </td>
+
                       <td className="border p-3 text-center space-x-2">
                         <button
                           onClick={() => openModal(venue)}
@@ -176,10 +188,7 @@ const Venus: React.FC = () => {
                   ))
                 ) : (
                   <tr>
-                    <td
-                      colSpan={6}
-                      className="text-center py-5 text-gray-500"
-                    >
+                    <td colSpan={6} className="text-center py-5 text-gray-500">
                       No venues found.
                     </td>
                   </tr>

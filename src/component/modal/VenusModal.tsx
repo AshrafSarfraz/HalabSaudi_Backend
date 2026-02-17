@@ -3,21 +3,20 @@ import { toast } from "react-toastify";
 import Loader from "../loader/Loader";
 import { venueApi } from "../../backend/Api/venueApi";
 
-
 interface VenusModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSaved: () => void; // create/update ke baad parent ko bolne ke liye
-  editData?:
-    | {
-        id: string;
-        venueName: string;
-        venueNameAr: string;
-        city: string;
-        country: string;
-        img: string;
-      }
-    | null;
+  editData?: {
+    id: string;
+    venueName: string;
+    venueNameAr: string;
+    city: string;
+    country: string;
+    img: string;
+    longitude?: number;
+    latitude?: number;
+  } | null;
 }
 
 const AddVenusModal: React.FC<VenusModalProps> = ({
@@ -33,6 +32,8 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
   const [imageUpload, setImageUpload] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(""); // preview ke liye
+  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState("");
 
   useEffect(() => {
     if (editData) {
@@ -40,6 +41,8 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
       setVenueNameAr(editData.venueNameAr || "");
       setCity(editData.city || "");
       setCountry(editData.country || "");
+      setLongitude(editData.longitude?.toString() || "");
+      setLatitude(editData.latitude?.toString() || "");
       setImageUrl(editData.img || "");
       setImageUpload(null);
     } else {
@@ -47,6 +50,8 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
       setVenueNameAr("");
       setCity("");
       setCountry("");
+      setLongitude("");
+      setLatitude("");
       setImageUrl("");
       setImageUpload(null);
     }
@@ -61,7 +66,14 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
   };
 
   const saveVenue = async () => {
-    if (!venueName || !city || !country || (!imageUpload && !editData)) {
+    if (
+      !venueName ||
+      !city ||
+      !country ||
+      !longitude ||
+      !latitude ||
+      (!imageUpload && !editData)
+    ) {
       return toast.error("All fields are required");
     }
 
@@ -73,6 +85,8 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
       formData.append("venueNameAr", venueNameAr);
       formData.append("city", city);
       formData.append("country", country);
+      formData.append("longitude", longitude);
+      formData.append("latitude", latitude);
 
       if (imageUpload) {
         formData.append("img", imageUpload); // backend: multer.single("img")
@@ -133,6 +147,21 @@ const AddVenusModal: React.FC<VenusModalProps> = ({
           onChange={(e) => setCountry(e.target.value)}
           className="border p-3 w-full rounded-lg mb-3"
           placeholder="Country"
+        />
+        <input
+          type="number"
+          value={longitude}
+          onChange={(e) => setLongitude(e.target.value)}
+          className="border p-3 w-full rounded-lg mb-3"
+          placeholder="Longitude"
+        />
+
+        <input
+          type="number"
+          value={latitude}
+          onChange={(e) => setLatitude(e.target.value)}
+          className="border p-3 w-full rounded-lg mb-3"
+          placeholder="Latitude"
         />
 
         {imageUrl && (
